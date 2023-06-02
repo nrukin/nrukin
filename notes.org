@@ -23,3 +23,6 @@
 
 Документация:
 + [[https://orgmode.org/manual/Publishing.html][Publishing (The Org Manual)]]
+
+Параметры экспорта:
++ [[https://orgmode.org/manual/Export-Settings.html][Export Settings (The Org Manual)]]
