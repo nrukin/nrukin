@@ -1,5 +1,7 @@
 (require 'ox-publish)
 
+(setq org-html-metadata-timestamp-format "%d %B %Y")
+
 (setq org-publish-project-alist
       '(("posts"
          :base-directory "pages/"
