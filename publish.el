@@ -11,9 +11,14 @@
          :section-numbers nil
 	 :recursive t
 	 :auto-sitemap t
-	 ;; :sitemap-sort-files 'anti-chronologically
-	 ;; :sitemap-style 'list
-	 :sitemap-title "Оглавление")
+	 :sitemap-sort-files anti-chronologically
+	 :sitemap-title "Содержание"
+	 :sitemap-filename "index.org"
+	 :sitemap-style list
+	 :author "Никита Рукин"
+	 :email "nikita-rukin@yandex.ru"
+	 :with-timestamps nil
+	 :html-head "<link rel='stylesheet' type='text/css' href='../css/site.css' />")
 	("css"
 	 :base-directory "css/"
 	 :base-extension "css"
