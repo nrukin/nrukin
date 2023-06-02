@@ -1,0 +1,23 @@
+* Создание новой страницы
+** Вставка шаблона
+*** Шаблон по-умолчанию
+=C-c C-e # default RET=
+*** Шаблон html
+=C-c C-e # html RET=
+* Публикация
+** Скомпилировать проект
+=C-x p c=
+* Редактирование
+** Перенос строк
+=M-x visual-line-mode=
+** Проверка правописания
+=M-x flyspell-mode=
+* Ссылки
+** org-publish
+Статьи:
++ [[https://opensource.com/article/20/3/blog-emacs][How to blog with Emacs Org mode | Opensource.com]]
++ [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
++ [[https://miikanissi.com/blog/website-with-emacs/][Website With Emacs]]
+
+Документация:
++ [[https://orgmode.org/manual/Publishing.html][Publishing (The Org Manual)]]
