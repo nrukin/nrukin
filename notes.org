@@ -26,3 +26,5 @@
 
 Параметры экспорта:
 + [[https://orgmode.org/manual/Export-Settings.html][Export Settings (The Org Manual)]]
+** Оформление
++ [[https://www.reddit.com/r/emacs/comments/3pvbag/is_there_a_collection_of_css_styles_for_org/][Is there a collection of CSS styles for Org exports? What are your favorites? : emacs]]
