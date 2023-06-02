@@ -18,6 +18,8 @@
 + [[https://opensource.com/article/20/3/blog-emacs][How to blog with Emacs Org mode | Opensource.com]]
 + [[https://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html][Publishing Org-mode files to HTML]]
 + [[https://miikanissi.com/blog/website-with-emacs/][Website With Emacs]]
++ System Crafters:
+  + [[https://systemcrafters.net/publishing-websites-with-org-mode/automated-site-publishing/][Automated Org Mode Website Publishing with GitHub or SourceHut - System Crafters]]
 
 Документация:
 + [[https://orgmode.org/manual/Publishing.html][Publishing (The Org Manual)]]
