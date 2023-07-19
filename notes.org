@@ -26,6 +26,20 @@
 	   (file create-blog-post)
 	   (file "~/projects/blog/post.orgcaptmpl"))))
 #+end_src
+** Шаблон без запроса имени файла
+В результате создаются файлы =20230719_1726.org=
+#+begin_src emacs-lisp
+  (defun create-blog-post ()
+    "Create an org file in ~/projects/blog/posts"
+    (interactive)
+    (expand-file-name
+     (format
+      "%s.org" (format-time-string "%Y%m%d_%H%M" (seconds-to-time (current-time))))
+     "~/projects/blog/pages"))
+
+  (add-to-list 'org-capture-templates
+	       '("p" "Post" plain (file create-blog-post) (file "~/projects/blog/post.orgcaptmpl")))
+#+end_src
 * Ссылки
 ** org-publish
 Статьи:
