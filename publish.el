@@ -1,6 +1,7 @@
 (require 'ox-publish)
 
 (setq org-html-metadata-timestamp-format "%d %B %Y")
+(setq org-html-validation-link nil)
 
 (setq org-publish-project-alist
       '(("posts"
