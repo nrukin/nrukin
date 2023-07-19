@@ -12,6 +12,20 @@
 =M-x visual-line-mode=
 ** Проверка правописания
 =M-x flyspell-mode=
+* Шаблон для новых записей
+Добавить в =init.el= шаблон для быстрого создания новых постов
+#+begin_src emacs-lisp
+  (defun create-blog-post ()
+    "Create an org file in ~/projects/blog/posts"
+    (interactive)
+    (let ((name (read-string "Filename: ")))
+      (expand-file-name (format "%s.org" name) "~/projects/blog/pages/")))
+
+  (setq org-capture-templates
+	'(("p" "Post" plain
+	   (file create-blog-post)
+	   (file "~/projects/blog/post.orgcaptmpl"))))
+#+end_src
 * Ссылки
 ** org-publish
 Статьи:
