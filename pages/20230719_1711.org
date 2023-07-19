@@ -1,0 +1,26 @@
+#+title: Быстрое редактирование свойств в org-mode
+#+date: <2023-07-19>
+#+keywords: emacs org-mode
+
+Наткнулся на вопрос: [[https://emacs.stackexchange.com/questions/77959/key-binding-to-set-specific-property-value-in-properties-drawer][Key binding to set specific property value in PROPERTIES drawer]]
+
+Вопрос показался интересен - в рабочих вопросах частенько указываю свойство =jira=
+с идентификатором таски в jira, и, вводить каждый раз комбинацию =C-c C-x p jira RET=
+для редактирования надоело.
+
+В первой реализации из ответа мне не понравилось что при нажатии =<F7>= показывался
+пустой ввод, хотя, возможно, свойство и было заполнено раньше. Немного поправил код
+и получилась такая конструкция:
+
+#+begin_src emacs-lisp
+  ;; f7 hotkey to edit jira heading property
+  (defun org-set-jira(jira-value)
+    "set jira property at current heading"
+    (interactive (list (read-from-minibuffer "Jira? " (org-entry-get nil "jira"))))
+    (org-set-property "jira" jira-value))
+
+  (define-key org-mode-map (kbd "<f7>") 'org-set-jira)
+#+end_src
+
+Теперь, при нажатии =<F7>= в запросе указывается изначальное значение свойства =jira=, а,
+после ввода, оно заменяется на введённое.
