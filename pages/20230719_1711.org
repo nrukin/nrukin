@@ -4,8 +4,8 @@
 
 Наткнулся на вопрос: [[https://emacs.stackexchange.com/questions/77959/key-binding-to-set-specific-property-value-in-properties-drawer][Key binding to set specific property value in PROPERTIES drawer]]
 
-Вопрос показался интересен - в рабочих вопросах частенько указываю свойство =jira=
-с идентификатором таски в jira, и, вводить каждый раз =C-c C-x p jira RET= для
+Вопрос показался интересен - по работе часто заполняю свойство =jira=
+с идентификатором таски, и, вводить каждый раз =C-c C-x p jira RET= для
 редактирования надоело.
 
 В первой реализации из ответа мне не понравилось что при нажатии =<F7>= показывался
