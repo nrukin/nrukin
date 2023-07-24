@@ -27,6 +27,9 @@
 	 :email "nikita-rukin@yandex.ru"
 	 :with-timestamps nil
 	 :with-toc nil
+	 :with-author nil
+	 :with-date t
+	 :with-timestamps nil
 	 :html-head "<link rel='stylesheet' type='text/css' href='../css/site.css' />")
 	("css"
 	 :base-directory "css/"
