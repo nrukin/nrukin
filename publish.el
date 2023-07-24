@@ -5,6 +5,24 @@
 (setq org-export-default-language "ru")
 (setq org-export-time-stamp-file nil)
 
+(setq org-html-preamble "<link rel='stylesheet' type='text/css' href='css/site.css' />
+<!-- <div class='intro'>
+  <h1>
+    <span class='gray'>John</span>
+    <span class='black'>Doe</span>
+  </h1>
+  <p>Emacser</p>
+</div> -->
+
+<div class='nav'>
+  <ul>
+    <li><a href='index.html'>В начало</a>.</li>
+    <!-- <li><a href='https://github.com/nrukin/'>GitHub</a>.</li> -->
+    <!-- <li><a href='/index.xml'>RSS</a>.</li> -->
+    <li><a href='about.html'>About</a>.</li>
+  </ul>
+</div>")
+
 (defun blog/org-publish-org-sitemap-format-entry (entry style project)
   (format "%s - [[file:%s][%s]]"
 	  (format-time-string "%F" (org-publish-find-date entry project))
@@ -29,13 +47,21 @@
 	 :email "nikita-rukin@yandex.ru"
 	 :with-toc nil
 	 :with-author nil
-	 :with-date t
-	 :html-head "<link rel='stylesheet' type='text/css' href='css/site.css' />")
+	 :with-date t)
 	("css"
 	 :base-directory "css/"
 	 :base-extension "css"
 	 :publishing-directory "public/css"
 	 :publishing-function org-publish-attachment
 	 :recursive t)
+	("about"
+         :base-directory "about/"
+         :base-extension "org"
+         :recursive nil
+         :publishing-function org-html-publish-to-html
+         :publishing-directory "public/"
+	 :with-toc nil
+	 :with-author nil
+	 :section-numbers nil)
 	("all" :components ("posts" "css"))))
 
