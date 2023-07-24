@@ -2,6 +2,8 @@
 
 (setq org-html-metadata-timestamp-format "%d %B %Y")
 (setq org-html-validation-link nil)
+(setq org-export-default-language "ru")
+(setq org-export-time-stamp-file nil)
 
 (defun blog/org-publish-org-sitemap-format-entry (entry style project)
   (format "%s - [[file:%s][%s]]"
@@ -25,11 +27,9 @@
 	 :sitemap-style list
 	 :author "Никита Рукин"
 	 :email "nikita-rukin@yandex.ru"
-	 :with-timestamps nil
 	 :with-toc nil
 	 :with-author nil
 	 :with-date t
-	 :with-timestamps nil
 	 :html-head "<link rel='stylesheet' type='text/css' href='../css/site.css' />")
 	("css"
 	 :base-directory "css/"
