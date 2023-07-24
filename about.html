@@ -5,9 +5,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Быстрое редактирование свойств в org-mode</title>
+<title>&lrm;</title>
 <meta name="generator" content="Org mode" />
-<meta name="keywords" content="emacs org-mode" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -260,41 +259,14 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <div id="content">
-<h1 class="title">Быстрое редактирование свойств в org-mode</h1>
-<p>
-Наткнулся на вопрос: <a href="https://emacs.stackexchange.com/questions/77959/key-binding-to-set-specific-property-value-in-properties-drawer">Key binding to set specific property value in PROPERTIES drawer</a>
-</p>
-
-<p>
-Вопрос показался интересен - по работе часто заполняю свойство <code>jira</code>
-с идентификатором таски, и, вводить каждый раз <code>C-c C-x p jira RET</code> для
-редактирования надоело.
-</p>
-
-<p>
-В первой реализации из ответа мне не понравилось что при нажатии <code>&lt;F7&gt;</code> показывался
-пустой ввод, хотя, возможно, свойство и было заполнено раньше. Немного поправил код
-и получилась такая конструкция:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-emacs-lisp">;; f7 hotkey to edit jira heading property
-(defun org-set-jira(jira-value)
-  "set jira property at current heading"
-  (interactive (list (read-from-minibuffer "Jira? " (org-entry-get nil "jira"))))
-  (org-set-property "jira" jira-value))
-
-(define-key org-mode-map (kbd "&lt;f7&gt;") 'org-set-jira)
+<div id="outline-container-org288c4d2" class="outline-2">
+<h2 id="org288c4d2">About</h2>
+<div class="outline-text-2" id="text-org288c4d2">
+<pre class="example">
+¯\_(ツ)_/¯
 </pre>
 </div>
-
-<p>
-Теперь, при нажатии <code>&lt;F7&gt;</code> в запросе указывается изначальное значение свойства <code>jira</code>, а,
-после ввода, оно заменяется на введённое.
-</p>
 </div>
-<div id="postamble" class="status">
-<p class="date">&#1044;&#1072;&#1090;&#1072;: 19 July 2023</p>
 </div>
 </body>
 </html>
