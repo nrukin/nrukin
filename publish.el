@@ -30,7 +30,7 @@
 	 :with-toc nil
 	 :with-author nil
 	 :with-date t
-	 :html-head "<link rel='stylesheet' type='text/css' href='../css/site.css' />")
+	 :html-head "<link rel='stylesheet' type='text/css' href='css/site.css' />")
 	("css"
 	 :base-directory "css/"
 	 :base-extension "css"
