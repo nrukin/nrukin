@@ -63,5 +63,11 @@
 	 :with-toc nil
 	 :with-author nil
 	 :section-numbers nil)
-	("all" :components ("posts" "css"))))
+	("static"
+         :base-directory "static/"
+	 :base-extension any
+         :publishing-directory "public/static"
+         :publishing-function org-publish-attachment
+         :recursive t)
+	("all" :components ("posts" "css" "about" "static"))))
 
