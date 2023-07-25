@@ -1,0 +1,274 @@
+#+title: Elfeed - Читалка RSS в Emacs
+#+date: <2023-07-25>
+#+keywords: draft
+
+В emacs есть возможность подписываться и читать ленты
+новостей RSS не выходя из emacs. [[https://github.com/skeeto/elfeed][Elfeed]] - пожалуй самый
+удобный пакет для работы с RSS внутри emacs.
+
+* Установка
+Для установки и настройки пакетов я использую =use-package=
+т.к. он позволяет выполнить настройку в одном месте в коде
+и в одной команде.
+** Подключение к melpa и подключение use-package
+В =init.el= добавляем код:
++ Подключаемся к репозиторию MELPA
++ Устанавливаем и инициализируем пакет =use-package=
++ Устанавливаем =use-package-always-ensure= в =t= (т.е. =true=) -
+  таким образом все неустановленные пакеты будут автоматически
+  устанавливаться при запуске emacs, и при этом для каждого из
+  пакетов не будет нужно писать в настройках =:ensure t=.
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+#+end_src
+** Простая установка и настройка elfeed
+*** Проверка работы под Windows
+Перед настройкой elfeed не помешает определить - не работаем
+ли мы сейчас под Windows, т.к. в этой ОС будет нужно
+сделать одну дополнительную настройку.
+#+begin_src emacs-lisp
+  (defvar run-on-win-p (eq system-type 'windows-nt))
+#+end_src
+*** Подключение elfeed через use-package
+#+begin_src emacs-lisp
+  (use-package elfeed
+    :bind ("C-x w" . elfeed)
+    :config
+    (when run-on-win-p
+      (setq elfeed-use-curl nil)))
+#+end_src
+Этой командой мы:
++ Устанавливаем пакет elfeed (если этого не случилось раньше)
++ Подключаем сочетание клавиш =C-x w= на открытие elfeed
++ Отключаем использование =curl= в windows
+
+Под windows я обнаружил неприятную особенность: даже если
+=curl= установлен и находится в =PATH= - elfeed всё равно отказывается
+с ним работать, и загрузка списков не происходит, поэтому пришлось
+его явно отключить.
+
+* Настройка подписок
+Самый простой способ настройки подписок - использование пакета =elfeed-org=.
+Он позволяет перечислить список подписок внутри файла в формате org.
+
+Я храню подписки в файле =~/org/elfeed.org=. Настрою подключение к этому
+файлу в =init.el=.
+#+begin_src emacs-lisp
+  (use-package elfeed-org
+    :init
+    (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
+    :config
+    (elfeed-org))
+#+end_src
+
+Пример небольшого файла =~/org/elfeed.org=:
+#+begin_src org
+  ,* Feeds                                                    :elfeed:
+  ,** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
+  ,** golang                                                  :golang:
+  ,*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
+  ,** emacs                                                    :emacs:
+  ,*** http://www.reddit.com/r/emacs/.rss
+  ,*** http://www.reddit.com/r/orgmode/.rss                      :org:
+  ,*** https://emacs.stackexchange.com/feeds
+  ,*** https://sachachua.com/blog/feed                          :blog:
+  ,*** https://irreal.org/blog/?feed=rss2                       :blog:
+  ,*** http://pragmaticemacs.com/feed/                          :blog:
+#+end_src
+
+Главное в этом файле:
++ Теги записей станут тегами подписок
++ Для ссылок на подписку можно указывать представление (как у Хабра в примере).
+  Тогда подписка будет отображаться в списке с указанным именем.
++ у корневого узла нужно установить тег =elfeed=
+
+После того как все настройки сделаны можно перезапускать emacs, затем нажимаем
+последовательно:
++ =C-x w= - настроенное раньше сочетание для открытия elfeed
++ =G= - обновления подписок
+
+Всё, после сделанных настроек elfeed уже можно полноценно пользоваться, но, хочется
+сделать пару небольших правок.
+
+* Небольшие правки
+** Раскрашивание тегов
+Я хочу чтобы разные теги в списке отображались по разному.
+
+В первую очередь получим список всех доступных цветов в emacs, для этого
+вызовем функцию =M-x list-colors-display= и определимся с цветами.
+
+Настраиваю два цвета для тегов =habr= и =emacs=:
+
+#+begin_src elisp
+  (defface elfeed-emacs-tag
+    '((t :foreground "gold"))
+    "color for emacs tag in elfeed")
+
+  (push '(emacs elfeed-emacs-tag)
+	elfeed-search-face-alist)
+
+  (defface elfeed-habr-tag
+    '((t :foreground "#78a2b7"))
+    "color for habr tag in elfeed")
+
+  (push '(habr elfeed-habr-tag)
+	elfeed-search-face-alist)
+#+end_src
+
+Этих манипуляций, в принципе, достаточно, но мне не нравится что
+перечень подписок находится в =~/org/elfeed.org= а раскрашивание
+тегов в =init.el=. Для единообразия перенесу код отвечающий за
+раскрашивание в org-файл, в этом поможет модуль =org-babel=.
+
+Для начала добавлю код раскрашивания в org-файл:
+#+begin_src org
+  ,* Feeds                                                    :elfeed:
+  ,** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
+  ,** golang                                                  :golang:
+  ,*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
+  ,** emacs                                                    :emacs:
+  ,*** http://www.reddit.com/r/emacs/.rss
+  ,*** http://www.reddit.com/r/orgmode/.rss                      :org:
+  ,*** https://emacs.stackexchange.com/feeds
+  ,*** https://sachachua.com/blog/feed                          :blog:
+  ,*** https://irreal.org/blog/?feed=rss2                       :blog:
+  ,*** http://pragmaticemacs.com/feed/                          :blog:
+  ,* Tag coloring
+  ,** emacs
+  ,#+begin_src elisp
+      (defface elfeed-emacs-tag
+	'((t :foreground "gold"))
+	"color for emacs tag in elfeed")
+
+      (push '(emacs elfeed-emacs-tag)
+	    elfeed-search-face-alist)
+  ,#+end_src
+  ,** habr
+  ,#+begin_src elisp
+      (defface elfeed-habr-tag
+	'((t :foreground "#78a2b7"))
+	"color for habr tag in elfeed")
+
+      (push '(habr elfeed-habr-tag)
+	    elfeed-search-face-alist)
+  ,#+end_src
+#+end_src
+Я добавил ветку *Tag coloring*, в которой записал блоки кода, отвечающие
+за раскрашивание. Теперь осталось добавить в =init.el= код, который будет конвертировать
+org-файл в исполняемый файл el и запускать его, при запуске emacs. Размещу
+его в дополнение к изначальному =use-package elfeed org=.
+#+begin_src emacs-lisp
+  (use-package elfeed-org
+    :init
+    (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
+    :config
+    (elfeed-org)
+    (ignore-errors (org-babel-load-file "~/org/elfeed.org")))
+#+end_src
+
+Код раскрашивания, после этого, можно удалить из init-файла.
+
+** Оформление
+Просто маленькое украшение:
++ Укажу свой формат даты
++ Увеличу длину строки названия до 100 символов:
+#+begin_src emacs-lisp
+  ;; elfeed
+  (use-package elfeed
+    :bind ("C-x w" . elfeed)
+    :config
+    (when run-on-win-p
+      (setq elfeed-use-curl nil))
+    (defun elfeed-search-format-date (date)
+      (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
+    (setq elfeed-search-title-max-width 100))
+#+end_src
+
+* Итоговые файлы
+** init.el
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+  (defvar run-on-win-p (eq system-type 'windows-nt))
+
+  (use-package elfeed
+    :bind ("C-x w" . elfeed)
+    :config
+    (when run-on-win-p
+      (setq elfeed-use-curl nil))
+    (defun elfeed-search-format-date (date)
+      (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
+    (setq elfeed-search-title-max-width 100))
+
+  (use-package elfeed-org
+    :init
+    (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
+    :config
+    (elfeed-org)
+    (ignore-errors (org-babel-load-file "~/org/elfeed.org")))
+#+end_src
+** elfeed.org
+
+#+begin_src org
+  ,* Feeds                                                    :elfeed:
+  ,** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
+  ,** golang                                                  :golang:
+  ,*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
+  ,** emacs                                                    :emacs:
+  ,*** http://www.reddit.com/r/emacs/.rss
+  ,*** http://www.reddit.com/r/orgmode/.rss                      :org:
+  ,*** https://emacs.stackexchange.com/feeds
+  ,*** https://sachachua.com/blog/feed                          :blog:
+  ,*** https://irreal.org/blog/?feed=rss2                       :blog:
+  ,*** http://pragmaticemacs.com/feed/                          :blog:
+  ,* Tag coloring
+  ,** emacs
+  ,#+begin_src elisp
+      (defface elfeed-emacs-tag
+	'((t :foreground "gold"))
+	"color for emacs tag in elfeed")
+
+      (push '(emacs elfeed-emacs-tag)
+	    elfeed-search-face-alist)
+  ,#+end_src
+  ,** habr
+  ,#+begin_src elisp
+      (defface elfeed-habr-tag
+	'((t :foreground "#78a2b7"))
+	"color for habr tag in elfeed")
+
+      (push '(habr elfeed-habr-tag)
+	    elfeed-search-face-alist)
+  ,#+end_src
+#+end_src
+
+* Шпаргалка по сочетаниям клавиш
+В принципе, перечисленных ниже команд должно быть достаточно чтобы пользоваться elfeed.
+Остальные можно подсмотреть по =C-h m=.
+| Операция                        | Сочетание клавиш | Команда                     |
+|---------------------------------+------------------+-----------------------------|
+| Открыть elfeed                  | =C-x w=          | =elfeed=                    |
+| Обновить подписки               | =G=              | =elfeed-search-fetch=       |
+| Открыть запись                  | =RET=            | =elfeed-search-show-entry=  |
+| Открыть ссылку в браузере       | =B=              | =elfeed-show-visit=         |
+| Закрыть запись                  | =q=              | =elfeed-kill-buffer=        |
+| Фильтр                          | =s=              | =elfeed-search-live-filter= |
+
