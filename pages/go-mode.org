@@ -1,0 +1,238 @@
+#+title: Настройка emacs для программирования на Go
+#+date: <2023-07-26>
+#+keywords: emacs go
+
+Кратко опишу настройки, которые позволяют писать код на go в emacs.
+
+* Установка go, gopls и goimport
+Открываем консоль в emacs - =M-x shell=.
+** go
+В первую очередь нужно установить сам go. Если go установлен - шаг пропускаем.
+Если нет - устанавливаем по инструкции под свою платформу https://go.dev/doc/install
+
+Для того чтобы отредактировать файл =/etc/profile= под sudo не выходя из emacs
+можно воспользоваться командой:
+#+begin_src
+  C-x f /sudo::/etc/profile
+#+end_src
+Файл откроется под sudo и в него можно добавить строку
+#+begin_src shell
+  export PATH=$PATH:/usr/local/go/bin
+#+end_src
+** gopls
+Во вторую очередь (но не менее важно) нам понадобится language-server для go - [[https://github.com/golang/tools/tree/master/gopls][gopls]].
+#+begin_src shell
+  go install golang.org/x/tools/gopls@latest
+#+end_src
+И, в моём случае, под ubuntu, добавляем переменную =GOPATH= в =PATH=, для этого
+добавляем в =~/.profile=
+#+begin_src shell
+  export PATH=$PATH:$(go env GOPATH)/bin
+#+end_src
+** goimport
+И в третью очередь нам понадобится [[https://pkg.go.dev/golang.org/x/tools/cmd/goimports][goimports]].
+Пишем в консоли
+#+begin_src shell
+  go install golang.org/x/tools/cmd/goimports@latest
+#+end_src
+Подготовка завершена.
+* go-mode и eglot
+Устанавливаем пакеты:
++ [[https://github.com/dominikh/go-mode.el][go-mode]]
++ [[https://github.com/joaotavora/eglot][eglot]]
++ [[http://company-mode.github.io/][company-mode]]
++ [[https://github.com/joaotavora/yasnippet][yasnippet]]
+
+Я использую emacs 28, поэтому пакет =eglot= нужно устанавливать
+из репозиториев. В 29 версии этот пакет будет встроен в поставку,
+как и =use-package=.
+
+#+begin_src emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (package-initialize)
+
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (require 'use-package)
+  (setq use-package-always-ensure t)
+
+  (use-package yasnippet
+    :config (yas-global-mode 1))
+
+  (use-package yasnippet-snippets
+    :after yasnippet)
+
+  (use-package company
+    :hook (prog-mode . company-mode))
+
+  (use-package eglot
+    :hook (go-mode . eglot-ensure)
+    :after (yasnippet company))
+
+  (use-package go-mode
+    :init
+    (setq gofmt-command "goimports")
+    :hook ((before-save . gofmt-before-save)
+	   (go-mode . (lambda () (local-set-key [f5] 'project-compile)))))
+#+end_src
+
+Что ещё интересного здесь происходит:
++ Я сразу же назначаю на =F5= команду компиляции проекта
++ Привязываю вызов команды =goimport= перед записью go-файла:
+  таким образом наш код при записи отформатируется единственным
+  правильным способом, а также будут добавлены нужные директивы =import=
++ Устанавливается пакет сниппетов [[https://github.com/AndreaCrotti/yasnippet-snippets][yasnippet-snippets]] в котором
+  есть много неплохих сниппетов кода
+
+* Разное удобство
+Перечисленные ниже пакеты и настройки не относятся напрямую к go,
+но всячески упрощают написание кода.
+
+При редактировании кода:
++ обрезаем не влезающие на экран строки
++ выводим номера строк
++ подключаем модуль [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html][hideshow]] (о нем чуть ниже)
+#+begin_src emacs-lisp
+  (add-hook 'prog-mode-hook (lambda()
+			      (toggle-truncate-lines 1)
+			      (display-line-numbers-mode 1)
+			      (hs-minor-mode)))
+#+end_src
+
++ Автоматически закрываем скобки
++ Добавляем [[https://github.com/Fanael/rainbow-delimiters][rainbow-delimiters]] - подкрашиваем скобки разной
+  глубины разным цветом. В основном мне это нужно при редактировании
+  elisp-кода, но и для go пригодится, а почему бы и нет?
++ Не спрашиваем о сохранении файла перед компиляцией
+#+begin_src emacs-lisp
+  (electric-pair-mode 1)
+
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
+
+  (setq compilation-ask-about-save nil)
+#+end_src
+
+* go-playground
+https://github.com/grafov/go-playground
+Просто пакет позволяющий выполнять маленькие куски кода,
+аналогично сайту [[https://go.dev/play/][Go Playground]], но только локально.
+#+begin_src emacs-lisp
+  (use-package go-playground)
+#+end_src
+
+При вызове команды =M-x go-playground= в специальной папке =go/src/playground=
+будет создан маленький проект, в котором можно выполнить какой-нибудь код, затем закрыть
+и забыть его. Код выполняется по =C-RET=.
+По команде =M-x go-playground-rm= каталог сниппета удаляется.
+* Тестирование
+Для тестирования установим пакет [[https://github.com/nlamirault/gotest.el][gotest]]
+#+begin_src emacs-lisp
+  (use-package gotest)
+#+end_src
+Использование пакета будет описано чуть ниже.
+* Hydra
+[[https://github.com/abo-abo/hydra][Hydra]] - пакет emacs, позволяющий настраивать собственные комбинации
+сочетаний клавиш. Добавим такой сниппет:
+#+begin_src emacs-lisp
+    (use-package hydra
+      :defer 2
+      :bind (:map go-mode-map
+	     ("<f8>" . hydra-go/body))
+      :config
+      (defhydra hydra-go (:color blue)
+	"
+	^
+	^Code^                  ^Folding^         ^Test^
+	^─────^─────────────────^───────^─────────^─────^─────────
+	_c_ code actions        _f_ fold          _t_ file
+	_r_ rename              _s_ unfold        _T_ project
+	_q_ quit                _F_ fold all      _b_ benchmark file
+	_d_ buffer diagnostics  _S_ unfold all    _B_ benchmark project
+	_D_ project diagnostics
+	_h_ doc
+	_H_ doc buffer
+	^^
+	"
+	("c" eglot-code-actions)
+	("r" eglot-rename)
+	("d" flymake-show-buffer-diagnostics)
+	("D" flymake-show-project-diagnostics)
+	("h" eldoc)
+	("H" eldoc-doc-buffer)
+	("f" hs-hide-block :color red)
+	("s" hs-show-block :color red)
+	("F" hs-hide-all :color red)
+	("S" hs-show-all :color red)
+	("t" go-test-current-file)
+	("T" go-test-current-project)
+	("b" go-test-current-file-benchmarks)
+	("B" go-test-current-project-benchmarks)
+	("q" nil)))
+#+end_src
+В этом коде мы назначаем на =F8= отображение специального меню, в котором
+собрано большинство нужных нужных команд:
++ Первая колонка - операции с кодом
+  + =c= - вызов возможных code-action которые предоставляет gopls применительно
+  к текущему блоку кода. По этой команде можно, например, организовать импорты,
+  заполнить поля структуры значениями по-умолчанию. Я так и не смог найти
+  полный перечень команд и контекстов, но иногда помогает, да.
+  + =r= - просто переименовать текущий символ (функцию, переменную, тип и т.д.)
+  во всех местах
+  + =d= - синтаксические ошибки в открытом файле
+  + =D= - синтаксические ошибки во проекте
+  + =h= - показать контекстную подсказку
+  + =H= - показать окно контекстной подсказки (ну или как-то так)
++ Вторая колонка - команды модуля hideshow. Используются
+  для аккуратненького сворачивания функций, циклов и т.п. чтобы не
+  занимали много места на экране. Команды помечены как красные - при нажатии
+  панель команд не закрывается автоматически (подробнее про цвет команд можно
+  почитать в документации hydra).
+  + =f= - свернуть текущий блок
+  + =s= - развернуть текущий блок
+  + =F= - свернуть все блоки
+  + =S= - развернуть все блоки
++ Третья колонка - тесты и бенчмарки. Команды модуля gotest
+  + =t= - тест открытого файла
+  + =T= - тест проекта
+  + =b= - бенчмарк открытого файла
+  + =B= - бенчмарк открытого проекта
++ =q= - выход
+
+[[file:../static/go-mode/hydra.png]]
+
+* Отладка
+Я особо не пользовался отладкой под Go, но на будущее
+набросал небольшой конфиг.
+** Отладчик devle
+Устанавливаем отладчик [[https://github.com/go-delve/delve][delve]]
+#+begin_src shell
+  go install github.com/go-delve/delve/cmd/dlv@latest
+#+end_src
+** go-dlv
+Добавляем пакет [[https://github.com/benma/go-dlv.el][go-dlv]]
+#+begin_src emacs-lisp
+  (use-package go-dlv)
+#+end_src
+Всё, на этом настройка завершена.
+** Использование отладки
+Запускаем отладчик командой =M-x dlv=, соглашаемся с предложенной в минибуфере командой.
+
+В буфере отладчика можно работать с отладчиком командами из [[https://github.com/go-delve/delve/blob/master/Documentation/cli/README.md][документации]].
+
+Сочетания буферов кода и dlv:
++ =C-x C-a C-b= - Set breakpoint at current line
++ =C-x C-a C-t= - Set trace at current line
++ =C-x C-a C-d= - Remove breakpoint at current line
++ =C-x C-a C-s= - Step one source line with display
++ =C-x C-a C-f= - Finish executing current function
++ =C-x C-a C-n= - Step one line (skip functions)
++ =C-x C-a C-r= - Continue running program
++ =C-x C-a C-u= - Continue to current line
++ =C-x C-a C-p= - Evaluate Go expression at point
++ =C-x C-a C-w= - Print expression at point on every step
++ =C-x C-a <= - Up N stack frames (numeric arg)
++ =C-x C-a >= - Down N stack frames (numeric arg)
