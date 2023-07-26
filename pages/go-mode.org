@@ -221,6 +221,11 @@ https://github.com/grafov/go-playground
 ** Использование отладки
 Запускаем отладчик командой =M-x dlv=, соглашаемся с предложенной в минибуфере командой.
 
+Если dlv ругается на терминал - добавляем флаг =--allow-non-terminal-interactive=true=:
+#+begin_src
+  dlv debug main.go --allow-non-terminal-interactive=true
+#+end_src
+
 В буфере отладчика можно работать с отладчиком командами из [[https://github.com/go-delve/delve/blob/master/Documentation/cli/README.md][документации]].
 
 Сочетания буферов кода и dlv:
