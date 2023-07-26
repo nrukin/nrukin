@@ -1,0 +1,670 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Настройка emacs для программирования на Go</title>
+<meta name="generator" content="Org mode" />
+<meta name="keywords" content="emacs go" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94443125, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94443125" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<link rel='stylesheet' type='text/css' href='css/site.css' />
+<!-- <div class='intro'>
+  <h1>
+    <span class='gray'>John</span>
+    <span class='black'>Doe</span>
+  </h1>
+  <p>Emacser</p>
+</div> -->
+
+<div class='nav'>
+  <ul>
+    <li><a href='index.html'>В начало</a>.</li>
+    <!-- <li><a href='https://github.com/nrukin/'>GitHub</a>.</li> -->
+    <!-- <li><a href='/index.xml'>RSS</a>.</li> -->
+    <li><a href='about.html'>About</a>.</li>
+  </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">Настройка emacs для программирования на Go</h1>
+<p>
+Кратко опишу настройки, которые позволяют писать код на go в emacs.
+</p>
+
+<div id="outline-container-org11709ea" class="outline-2">
+<h2 id="org11709ea">Установка go, gopls и goimport</h2>
+<div class="outline-text-2" id="text-org11709ea">
+<p>
+Открываем консоль в emacs - <code>M-x shell</code>.
+</p>
+</div>
+<div id="outline-container-org868f629" class="outline-3">
+<h3 id="org868f629">go</h3>
+<div class="outline-text-3" id="text-org868f629">
+<p>
+В первую очередь нужно установить сам go. Если go установлен - шаг пропускаем.
+Если нет - устанавливаем по инструкции под свою платформу <a href="https://go.dev/doc/install">https://go.dev/doc/install</a>
+</p>
+
+<p>
+Для того чтобы отредактировать файл <code>/etc/profile</code> под sudo не выходя из emacs
+можно воспользоваться командой:
+</p>
+<pre class="example">
+C-x f /sudo::/etc/profile
+</pre>
+<p>
+Файл откроется под sudo и в него можно добавить строку
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="font-weight: bold;">export</span> <span style="font-weight: bold; font-style: italic;">PATH</span>=$<span style="font-weight: bold; font-style: italic;">PATH</span>:/usr/local/go/bin
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org25b80a2" class="outline-3">
+<h3 id="org25b80a2">gopls</h3>
+<div class="outline-text-3" id="text-org25b80a2">
+<p>
+Во вторую очередь (но не менее важно) нам понадобится language-server для go - <a href="https://github.com/golang/tools/tree/master/gopls">gopls</a>.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">go install golang.org/x/tools/gopls@latest
+</pre>
+</div>
+<p>
+И, в моём случае, под ubuntu, добавляем переменную <code>GOPATH</code> в <code>PATH</code>, для этого
+добавляем в <code>~/.profile</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="font-weight: bold;">export</span> <span style="font-weight: bold; font-style: italic;">PATH</span>=$<span style="font-weight: bold; font-style: italic;">PATH</span>:$(go env GOPATH)/bin
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org065b5a1" class="outline-3">
+<h3 id="org065b5a1">goimport</h3>
+<div class="outline-text-3" id="text-org065b5a1">
+<p>
+И в третью очередь нам понадобится <a href="https://pkg.go.dev/golang.org/x/tools/cmd/goimports">goimports</a>.
+Пишем в консоли
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">go install golang.org/x/tools/cmd/goimports@latest
+</pre>
+</div>
+<p>
+Подготовка завершена.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-org1a5f219" class="outline-2">
+<h2 id="org1a5f219">go-mode и eglot</h2>
+<div class="outline-text-2" id="text-org1a5f219">
+<p>
+Устанавливаем пакеты:
+</p>
+<ul class="org-ul">
+<li><a href="https://github.com/dominikh/go-mode.el">go-mode</a></li>
+<li><a href="https://github.com/joaotavora/eglot">eglot</a></li>
+<li><a href="http://company-mode.github.io/">company-mode</a></li>
+<li><a href="https://github.com/joaotavora/yasnippet">yasnippet</a></li>
+</ul>
+
+<p>
+Я использую emacs 28, поэтому пакет <code>eglot</code> нужно устанавливать
+из репозиториев. В 29 версии этот пакет будет встроен в поставку,
+как и <code>use-package</code>.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">package</span>)
+(add-to-list 'package-archives '(<span style="font-style: italic;">"melpa"</span> . <span style="font-style: italic;">"https://melpa.org/packages/"</span>) t)
+(package-initialize)
+
+(<span style="font-weight: bold;">unless</span> (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">use-package</span>)
+(<span style="font-weight: bold;">setq</span> use-package-always-ensure t)
+
+(use-package yasnippet
+  <span style="font-weight: bold;">:config</span> (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  <span style="font-weight: bold;">:after</span> yasnippet)
+
+(use-package company
+  <span style="font-weight: bold;">:hook</span> (prog-mode . company-mode))
+
+(use-package eglot
+  <span style="font-weight: bold;">:hook</span> (go-mode . eglot-ensure)
+  <span style="font-weight: bold;">:after</span> (yasnippet company))
+
+(use-package go-mode
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> gofmt-command <span style="font-style: italic;">"goimports"</span>)
+  <span style="font-weight: bold;">:hook</span> ((before-save . gofmt-before-save)
+         (go-mode . (<span style="font-weight: bold;">lambda</span> () (local-set-key [f5] 'project-compile)))))
+</pre>
+</div>
+
+<p>
+Что ещё интересного здесь происходит:
+</p>
+<ul class="org-ul">
+<li>Я сразу же назначаю на <code>F5</code> команду компиляции проекта</li>
+<li>Привязываю вызов команды <code>goimport</code> перед записью go-файла:
+таким образом наш код при записи отформатируется единственным
+правильным способом, а также будут добавлены нужные директивы <code>import</code></li>
+<li>Устанавливается пакет сниппетов <a href="https://github.com/AndreaCrotti/yasnippet-snippets">yasnippet-snippets</a> в котором
+есть много неплохих сниппетов кода</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org19b26e2" class="outline-2">
+<h2 id="org19b26e2">Разное удобство</h2>
+<div class="outline-text-2" id="text-org19b26e2">
+<p>
+Перечисленные ниже пакеты и настройки не относятся напрямую к go,
+но всячески упрощают написание кода.
+</p>
+
+<p>
+При редактировании кода:
+</p>
+<ul class="org-ul">
+<li>обрезаем не влезающие на экран строки</li>
+<li>выводим номера строк</li>
+<li>подключаем модуль <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Hideshow.html">hideshow</a> (о нем чуть ниже)</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(add-hook 'prog-mode-hook (<span style="font-weight: bold;">lambda</span>()
+                            (toggle-truncate-lines 1)
+                            (display-line-numbers-mode 1)
+                            (hs-minor-mode)))
+</pre>
+</div>
+
+<ul class="org-ul">
+<li>Автоматически закрываем скобки</li>
+<li>Добавляем <a href="https://github.com/Fanael/rainbow-delimiters">rainbow-delimiters</a> - подкрашиваем скобки разной
+глубины разным цветом. В основном мне это нужно при редактировании
+elisp-кода, но и для go пригодится, а почему бы и нет?</li>
+<li>Не спрашиваем о сохранении файла перед компиляцией</li>
+</ul>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(electric-pair-mode 1)
+
+(use-package rainbow-delimiters
+  <span style="font-weight: bold;">:hook</span> (prog-mode . rainbow-delimiters-mode))
+
+(<span style="font-weight: bold;">setq</span> compilation-ask-about-save nil)
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgd9e051f" class="outline-2">
+<h2 id="orgd9e051f">go-playground</h2>
+<div class="outline-text-2" id="text-orgd9e051f">
+<p>
+<a href="https://github.com/grafov/go-playground">https://github.com/grafov/go-playground</a>
+Просто пакет позволяющий выполнять маленькие куски кода,
+аналогично сайту <a href="https://go.dev/play/">Go Playground</a>, но только локально.
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package go-playground)
+</pre>
+</div>
+
+<p>
+При вызове команды <code>M-x go-playground</code> в специальной папке <code>go/src/playground</code>
+будет создан маленький проект, в котором можно выполнить какой-нибудь код, затем закрыть
+и забыть его. Код выполняется по <code>C-RET</code>.
+По команде <code>M-x go-playground-rm</code> каталог сниппета удаляется.
+</p>
+</div>
+</div>
+<div id="outline-container-orgc57a680" class="outline-2">
+<h2 id="orgc57a680">Тестирование</h2>
+<div class="outline-text-2" id="text-orgc57a680">
+<p>
+Для тестирования установим пакет <a href="https://github.com/nlamirault/gotest.el">gotest</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package gotest)
+</pre>
+</div>
+<p>
+Использование пакета будет описано чуть ниже.
+</p>
+</div>
+</div>
+<div id="outline-container-org4d4b8a9" class="outline-2">
+<h2 id="org4d4b8a9">Hydra</h2>
+<div class="outline-text-2" id="text-org4d4b8a9">
+<p>
+<a href="https://github.com/abo-abo/hydra">Hydra</a> - пакет emacs, позволяющий настраивать собственные комбинации
+сочетаний клавиш. Добавим такой сниппет:
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package hydra
+  <span style="font-weight: bold;">:defer</span> 2
+  <span style="font-weight: bold;">:bind</span> (<span style="font-weight: bold;">:map</span> go-mode-map
+         (<span style="font-style: italic;">"&lt;f8&gt;"</span> . hydra-go/body))
+  <span style="font-weight: bold;">:config</span>
+  (defhydra hydra-go (<span style="font-weight: bold;">:color</span> blue)
+    <span style="font-style: italic;">"</span>
+<span style="font-style: italic;">    ^</span>
+<span style="font-style: italic;">    ^Code^                  ^Folding^         ^Test^</span>
+<span style="font-style: italic;">    ^&#9472;&#9472;&#9472;&#9472;&#9472;^&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;^&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;^&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;^&#9472;&#9472;&#9472;&#9472;&#9472;^&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;&#9472;</span>
+<span style="font-style: italic;">    _c_ code actions        _f_ fold          _t_ file</span>
+<span style="font-style: italic;">    _r_ rename              _s_ unfold        _T_ project</span>
+<span style="font-style: italic;">    _q_ quit                _F_ fold all      _b_ benchmark file</span>
+<span style="font-style: italic;">    _d_ buffer diagnostics  _S_ unfold all    _B_ benchmark project</span>
+<span style="font-style: italic;">    _D_ project diagnostics</span>
+<span style="font-style: italic;">    _h_ doc</span>
+<span style="font-style: italic;">    _H_ doc buffer</span>
+<span style="font-style: italic;">    ^^</span>
+<span style="font-style: italic;">    "</span>
+    (<span style="font-style: italic;">"c"</span> eglot-code-actions)
+    (<span style="font-style: italic;">"r"</span> eglot-rename)
+    (<span style="font-style: italic;">"d"</span> flymake-show-buffer-diagnostics)
+    (<span style="font-style: italic;">"D"</span> flymake-show-project-diagnostics)
+    (<span style="font-style: italic;">"h"</span> eldoc)
+    (<span style="font-style: italic;">"H"</span> eldoc-doc-buffer)
+    (<span style="font-style: italic;">"f"</span> hs-hide-block <span style="font-weight: bold;">:color</span> red)
+    (<span style="font-style: italic;">"s"</span> hs-show-block <span style="font-weight: bold;">:color</span> red)
+    (<span style="font-style: italic;">"F"</span> hs-hide-all <span style="font-weight: bold;">:color</span> red)
+    (<span style="font-style: italic;">"S"</span> hs-show-all <span style="font-weight: bold;">:color</span> red)
+    (<span style="font-style: italic;">"t"</span> go-test-current-file)
+    (<span style="font-style: italic;">"T"</span> go-test-current-project)
+    (<span style="font-style: italic;">"b"</span> go-test-current-file-benchmarks)
+    (<span style="font-style: italic;">"B"</span> go-test-current-project-benchmarks)
+    (<span style="font-style: italic;">"q"</span> nil)))
+</pre>
+</div>
+<p>
+В этом коде мы назначаем на <code>F8</code> отображение специального меню, в котором
+собрано большинство нужных нужных команд:
+</p>
+<ul class="org-ul">
+<li><p>
+Первая колонка - операции с кодом
+</p>
+<ul class="org-ul">
+<li><code>c</code> - вызов возможных code-action которые предоставляет gopls применительно</li>
+</ul>
+<p>
+к текущему блоку кода. По этой команде можно, например, организовать импорты,
+заполнить поля структуры значениями по-умолчанию. Я так и не смог найти
+полный перечень команд и контекстов, но иногда помогает, да.
+</p>
+<ul class="org-ul">
+<li><code>r</code> - просто переименовать текущий символ (функцию, переменную, тип и т.д.)</li>
+</ul>
+<p>
+во всех местах
+</p>
+<ul class="org-ul">
+<li><code>d</code> - синтаксические ошибки в открытом файле</li>
+<li><code>D</code> - синтаксические ошибки во проекте</li>
+<li><code>h</code> - показать контекстную подсказку</li>
+<li><code>H</code> - показать окно контекстной подсказки (ну или как-то так)</li>
+</ul></li>
+<li>Вторая колонка - команды модуля hideshow. Используются
+для аккуратненького сворачивания функций, циклов и т.п. чтобы не
+занимали много места на экране. Команды помечены как красные - при нажатии
+панель команд не закрывается автоматически (подробнее про цвет команд можно
+почитать в документации hydra).
+<ul class="org-ul">
+<li><code>f</code> - свернуть текущий блок</li>
+<li><code>s</code> - развернуть текущий блок</li>
+<li><code>F</code> - свернуть все блоки</li>
+<li><code>S</code> - развернуть все блоки</li>
+</ul></li>
+<li>Третья колонка - тесты и бенчмарки. Команды модуля gotest
+<ul class="org-ul">
+<li><code>t</code> - тест открытого файла</li>
+<li><code>T</code> - тест проекта</li>
+<li><code>b</code> - бенчмарк открытого файла</li>
+<li><code>B</code> - бенчмарк открытого проекта</li>
+</ul></li>
+<li><code>q</code> - выход</li>
+</ul>
+
+
+<div class="figure">
+<p><img src="../static/go-mode/hydra.png" alt="hydra.png" />
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf8598df" class="outline-2">
+<h2 id="orgf8598df">Отладка</h2>
+<div class="outline-text-2" id="text-orgf8598df">
+<p>
+Я особо не пользовался отладкой под Go, но на будущее
+набросал небольшой конфиг.
+</p>
+</div>
+<div id="outline-container-orga0e629d" class="outline-3">
+<h3 id="orga0e629d">Отладчик devle</h3>
+<div class="outline-text-3" id="text-orga0e629d">
+<p>
+Устанавливаем отладчик <a href="https://github.com/go-delve/delve">delve</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">go install github.com/go-delve/delve/cmd/dlv@latest
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org1587afa" class="outline-3">
+<h3 id="org1587afa">go-dlv</h3>
+<div class="outline-text-3" id="text-org1587afa">
+<p>
+Добавляем пакет <a href="https://github.com/benma/go-dlv.el">go-dlv</a>
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package go-dlv)
+</pre>
+</div>
+<p>
+Всё, на этом настройка завершена.
+</p>
+</div>
+</div>
+<div id="outline-container-org2244762" class="outline-3">
+<h3 id="org2244762">Использование отладки</h3>
+<div class="outline-text-3" id="text-org2244762">
+<p>
+Запускаем отладчик командой <code>M-x dlv</code>, соглашаемся с предложенной в минибуфере командой.
+</p>
+
+<p>
+В буфере отладчика можно работать с отладчиком командами из <a href="https://github.com/go-delve/delve/blob/master/Documentation/cli/README.md">документации</a>.
+</p>
+
+<p>
+Сочетания буферов кода и dlv:
+</p>
+<ul class="org-ul">
+<li><code>C-x C-a C-b</code> - Set breakpoint at current line</li>
+<li><code>C-x C-a C-t</code> - Set trace at current line</li>
+<li><code>C-x C-a C-d</code> - Remove breakpoint at current line</li>
+<li><code>C-x C-a C-s</code> - Step one source line with display</li>
+<li><code>C-x C-a C-f</code> - Finish executing current function</li>
+<li><code>C-x C-a C-n</code> - Step one line (skip functions)</li>
+<li><code>C-x C-a C-r</code> - Continue running program</li>
+<li><code>C-x C-a C-u</code> - Continue to current line</li>
+<li><code>C-x C-a C-p</code> - Evaluate Go expression at point</li>
+<li><code>C-x C-a C-w</code> - Print expression at point on every step</li>
+<li><code>C-x C-a &lt;</code> - Up N stack frames (numeric arg)</li>
+<li><code>C-x C-a &gt;</code> - Down N stack frames (numeric arg)</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 26 July 2023</p>
+</div>
+</body>
+</html>
