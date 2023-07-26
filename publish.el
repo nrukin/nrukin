@@ -1,3 +1,11 @@
+(require 'package)
+(package-initialize)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(package-refresh-contents)
+
+(unless (package-installed-p 'htmlize)
+  (package-install 'htmlize))
+
 (require 'ox-publish)
 
 (setq org-html-metadata-timestamp-format "%d %B %Y")
