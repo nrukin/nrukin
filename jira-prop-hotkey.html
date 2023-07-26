@@ -241,6 +241,23 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="preamble" class="status">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94443125, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94443125" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
 <link rel='stylesheet' type='text/css' href='css/site.css' />
 <!-- <div class='intro'>
   <h1>
@@ -278,13 +295,13 @@ for the JavaScript code in this tag.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">;; f7 hotkey to edit jira heading property
-(defun org-set-jira(jira-value)
-  "set jira property at current heading"
-  (interactive (list (read-from-minibuffer "Jira? " (org-entry-get nil "jira"))))
-  (org-set-property "jira" jira-value))
+<pre class="src src-emacs-lisp"><span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">f7 hotkey to edit jira heading property</span>
+(<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">org-set-jira</span>(jira-value)
+  <span style="font-style: italic;">"set jira property at current heading"</span>
+  (<span style="font-weight: bold;">interactive</span> (list (read-from-minibuffer <span style="font-style: italic;">"Jira? "</span> (org-entry-get nil <span style="font-style: italic;">"jira"</span>))))
+  (org-set-property <span style="font-style: italic;">"jira"</span> jira-value))
 
-(define-key org-mode-map (kbd "&lt;f7&gt;") 'org-set-jira)
+(define-key org-mode-map (kbd <span style="font-style: italic;">"&lt;f7&gt;"</span>) 'org-set-jira)
 </pre>
 </div>
 

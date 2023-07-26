@@ -241,6 +241,23 @@ for the JavaScript code in this tag.
 </head>
 <body>
 <div id="preamble" class="status">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94443125, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94443125" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
 <link rel='stylesheet' type='text/css' href='css/site.css' />
 <!-- <div class='intro'>
   <h1>
@@ -267,18 +284,18 @@ for the JavaScript code in this tag.
 удобный пакет для работы с RSS внутри emacs.
 </p>
 
-<div id="outline-container-org22fdef0" class="outline-2">
-<h2 id="org22fdef0">Установка</h2>
-<div class="outline-text-2" id="text-org22fdef0">
+<div id="outline-container-orgf2a8ca4" class="outline-2">
+<h2 id="orgf2a8ca4">Установка</h2>
+<div class="outline-text-2" id="text-orgf2a8ca4">
 <p>
 Для установки и настройки пакетов я использую <code>use-package</code>
 т.к. он позволяет выполнить настройку в одном месте в коде
 и в одной команде.
 </p>
 </div>
-<div id="outline-container-org194d6a9" class="outline-3">
-<h3 id="org194d6a9">Подключение к melpa и подключение use-package</h3>
-<div class="outline-text-3" id="text-org194d6a9">
+<div id="outline-container-org103c484" class="outline-3">
+<h3 id="org103c484">Подключение к melpa и подключение use-package</h3>
+<div class="outline-text-3" id="text-org103c484">
 <p>
 В <code>init.el</code> добавляем код:
 </p>
@@ -291,47 +308,47 @@ for the JavaScript code in this tag.
 пакетов не будет нужно писать в настройках <code>:ensure t</code>.</li>
 </ul>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+<pre class="src src-emacs-lisp">(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">package</span>)
+(add-to-list 'package-archives '(<span style="font-style: italic;">"melpa"</span> . <span style="font-style: italic;">"https://melpa.org/packages/"</span>) t)
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
+(<span style="font-weight: bold;">unless</span> (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
-(setq use-package-always-ensure t)
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">use-package</span>)
+(<span style="font-weight: bold;">setq</span> use-package-always-ensure t)
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-org4a67e7b" class="outline-3">
-<h3 id="org4a67e7b">Простая установка и настройка elfeed</h3>
-<div class="outline-text-3" id="text-org4a67e7b">
+<div id="outline-container-orgea11a61" class="outline-3">
+<h3 id="orgea11a61">Простая установка и настройка elfeed</h3>
+<div class="outline-text-3" id="text-orgea11a61">
 </div>
-<div id="outline-container-org0dbbf6b" class="outline-4">
-<h4 id="org0dbbf6b">Проверка работы под Windows</h4>
-<div class="outline-text-4" id="text-org0dbbf6b">
+<div id="outline-container-org77597dc" class="outline-4">
+<h4 id="org77597dc">Проверка работы под Windows</h4>
+<div class="outline-text-4" id="text-org77597dc">
 <p>
 Перед настройкой elfeed не помешает определить - не работаем
 ли мы сейчас под Windows, т.к. в этой ОС будет нужно
 сделать одну дополнительную настройку.
 </p>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(defvar run-on-win-p (eq system-type 'windows-nt))
+<pre class="src src-emacs-lisp">(<span style="font-weight: bold;">defvar</span> <span style="font-weight: bold; font-style: italic;">run-on-win-p</span> (eq system-type 'windows-nt))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orge0b3294" class="outline-4">
-<h4 id="orge0b3294">Подключение elfeed через use-package</h4>
-<div class="outline-text-4" id="text-orge0b3294">
+<div id="outline-container-org17dea1b" class="outline-4">
+<h4 id="org17dea1b">Подключение elfeed через use-package</h4>
+<div class="outline-text-4" id="text-org17dea1b">
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package elfeed
-  :bind ("C-x w" . elfeed)
-  :config
-  (when run-on-win-p
-    (setq elfeed-use-curl nil)))
+  <span style="font-weight: bold;">:bind</span> (<span style="font-style: italic;">"C-x w"</span> . elfeed)
+  <span style="font-weight: bold;">:config</span>
+  (<span style="font-weight: bold;">when</span> run-on-win-p
+    (<span style="font-weight: bold;">setq</span> elfeed-use-curl nil)))
 </pre>
 </div>
 <p>
@@ -354,9 +371,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org77db70a" class="outline-2">
-<h2 id="org77db70a">Настройка подписок</h2>
-<div class="outline-text-2" id="text-org77db70a">
+<div id="outline-container-orgad57d1c" class="outline-2">
+<h2 id="orgad57d1c">Настройка подписок</h2>
+<div class="outline-text-2" id="text-orgad57d1c">
 <p>
 Самый простой способ настройки подписок - использование пакета <code>elfeed-org</code>.
 Он позволяет перечислить список подписок внутри файла в формате org.
@@ -368,9 +385,9 @@ for the JavaScript code in this tag.
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package elfeed-org
-  :init
-  (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
-  :config
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> rmh-elfeed-org-files '(<span style="font-style: italic;">"~/org/elfeed.org"</span>))
+  <span style="font-weight: bold;">:config</span>
   (elfeed-org))
 </pre>
 </div>
@@ -379,17 +396,17 @@ for the JavaScript code in this tag.
 Пример небольшого файла <code>~/org/elfeed.org</code>:
 </p>
 <div class="org-src-container">
-<pre class="src src-org">* Feeds                                                    :elfeed:
-** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
-** golang                                                  :golang:
-*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
-** emacs                                                    :emacs:
-*** http://www.reddit.com/r/emacs/.rss
-*** http://www.reddit.com/r/orgmode/.rss                      :org:
-*** https://emacs.stackexchange.com/feeds
-*** https://sachachua.com/blog/feed                          :blog:
-*** https://irreal.org/blog/?feed=rss2                       :blog:
-*** http://pragmaticemacs.com/feed/                          :blog:
+<pre class="src src-org"><span style="font-weight: bold;">* Feeds                                                    </span><span style="font-weight: bold;">:elfeed:</span>
+<span style="font-weight: bold; font-style: italic;">** </span><span style="text-decoration: underline;"><a href="https://habr.com/ru/rss/best/daily/?fl=ru">&#1061;&#1072;&#1073;&#1088;</a></span><span style="font-weight: bold; font-style: italic;">       </span><span style="font-weight: bold; font-style: italic;">:habr:</span>
+<span style="font-weight: bold; font-style: italic;">** golang                                                  </span><span style="font-weight: bold; font-style: italic;">:golang:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://cprss.s3.amazonaws.com/golangweekly.com.xml">https://cprss.s3.amazonaws.com/golangweekly.com.xml</a></span>
+<span style="font-weight: bold; font-style: italic;">** emacs                                                    </span><span style="font-weight: bold; font-style: italic;">:emacs:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/emacs/.rss">http://www.reddit.com/r/emacs/.rss</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/orgmode/.rss">http://www.reddit.com/r/orgmode/.rss</a></span><span style="font-weight: bold;">                      </span><span style="font-weight: bold;">:org:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://emacs.stackexchange.com/feeds">https://emacs.stackexchange.com/feeds</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://sachachua.com/blog/feed">https://sachachua.com/blog/feed</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://irreal.org/blog/?feed=rss2">https://irreal.org/blog/?feed=rss2</a></span><span style="font-weight: bold;">                       </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://pragmaticemacs.com/feed/">http://pragmaticemacs.com/feed/</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
 </pre>
 </div>
 
@@ -419,13 +436,13 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgfa59175" class="outline-2">
-<h2 id="orgfa59175">Небольшие правки</h2>
-<div class="outline-text-2" id="text-orgfa59175">
+<div id="outline-container-org6959626" class="outline-2">
+<h2 id="org6959626">Небольшие правки</h2>
+<div class="outline-text-2" id="text-org6959626">
 </div>
-<div id="outline-container-org656cb54" class="outline-3">
-<h3 id="org656cb54">Раскрашивание тегов</h3>
-<div class="outline-text-3" id="text-org656cb54">
+<div id="outline-container-orgc7afde8" class="outline-3">
+<h3 id="orgc7afde8">Раскрашивание тегов</h3>
+<div class="outline-text-3" id="text-orgc7afde8">
 <p>
 Я хочу чтобы разные теги в списке отображались по разному.
 </p>
@@ -440,18 +457,18 @@ for the JavaScript code in this tag.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-elisp">(defface elfeed-emacs-tag
-  '((t :foreground "gold"))
-  "color for emacs tag in elfeed")
+<pre class="src src-elisp">(<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-emacs-tag</span>
+  '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"gold"</span>))
+  <span style="font-style: italic;">"color for emacs tag in elfeed"</span>)
 
-(push '(emacs elfeed-emacs-tag)
+(<span style="font-weight: bold;">push</span> '(emacs elfeed-emacs-tag)
       elfeed-search-face-alist)
 
-(defface elfeed-habr-tag
-  '((t :foreground "#78a2b7"))
-  "color for habr tag in elfeed")
+(<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-habr-tag</span>
+  '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"#78a2b7"</span>))
+  <span style="font-style: italic;">"color for habr tag in elfeed"</span>)
 
-(push '(habr elfeed-habr-tag)
+(<span style="font-weight: bold;">push</span> '(habr elfeed-habr-tag)
       elfeed-search-face-alist)
 </pre>
 </div>
@@ -467,36 +484,36 @@ for the JavaScript code in this tag.
 Для начала добавлю код раскрашивания в org-файл:
 </p>
 <div class="org-src-container">
-<pre class="src src-org">* Feeds                                                    :elfeed:
-** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
-** golang                                                  :golang:
-*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
-** emacs                                                    :emacs:
-*** http://www.reddit.com/r/emacs/.rss
-*** http://www.reddit.com/r/orgmode/.rss                      :org:
-*** https://emacs.stackexchange.com/feeds
-*** https://sachachua.com/blog/feed                          :blog:
-*** https://irreal.org/blog/?feed=rss2                       :blog:
-*** http://pragmaticemacs.com/feed/                          :blog:
-* Tag coloring
-** emacs
-#+begin_src elisp
-    (defface elfeed-emacs-tag
-      '((t :foreground "gold"))
-      "color for emacs tag in elfeed")
+<pre class="src src-org"><span style="font-weight: bold;">* Feeds                                                    </span><span style="font-weight: bold;">:elfeed:</span>
+<span style="font-weight: bold; font-style: italic;">** </span><span style="text-decoration: underline;"><a href="https://habr.com/ru/rss/best/daily/?fl=ru">&#1061;&#1072;&#1073;&#1088;</a></span><span style="font-weight: bold; font-style: italic;">       </span><span style="font-weight: bold; font-style: italic;">:habr:</span>
+<span style="font-weight: bold; font-style: italic;">** golang                                                  </span><span style="font-weight: bold; font-style: italic;">:golang:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://cprss.s3.amazonaws.com/golangweekly.com.xml">https://cprss.s3.amazonaws.com/golangweekly.com.xml</a></span>
+<span style="font-weight: bold; font-style: italic;">** emacs                                                    </span><span style="font-weight: bold; font-style: italic;">:emacs:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/emacs/.rss">http://www.reddit.com/r/emacs/.rss</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/orgmode/.rss">http://www.reddit.com/r/orgmode/.rss</a></span><span style="font-weight: bold;">                      </span><span style="font-weight: bold;">:org:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://emacs.stackexchange.com/feeds">https://emacs.stackexchange.com/feeds</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://sachachua.com/blog/feed">https://sachachua.com/blog/feed</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://irreal.org/blog/?feed=rss2">https://irreal.org/blog/?feed=rss2</a></span><span style="font-weight: bold;">                       </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://pragmaticemacs.com/feed/">http://pragmaticemacs.com/feed/</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">* Tag coloring</span>
+<span style="font-weight: bold; font-style: italic;">** emacs</span>
+<span style="font-weight: bold; font-style: italic;">#+begin_src elisp</span>
+    (<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-emacs-tag</span>
+      '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"gold"</span>))
+      <span style="font-style: italic;">"color for emacs tag in elfeed"</span>)
 
-    (push '(emacs elfeed-emacs-tag)
-	  elfeed-search-face-alist)
-#+end_src
-** habr
-#+begin_src elisp
-    (defface elfeed-habr-tag
-      '((t :foreground "#78a2b7"))
-      "color for habr tag in elfeed")
+    (<span style="font-weight: bold;">push</span> '(emacs elfeed-emacs-tag)
+          elfeed-search-face-alist)
+<span style="font-weight: bold; font-style: italic;">#+end_src</span>
+<span style="font-weight: bold; font-style: italic;">** habr</span>
+<span style="font-weight: bold; font-style: italic;">#+begin_src elisp</span>
+    (<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-habr-tag</span>
+      '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"#78a2b7"</span>))
+      <span style="font-style: italic;">"color for habr tag in elfeed"</span>)
 
-    (push '(habr elfeed-habr-tag)
-	  elfeed-search-face-alist)
-#+end_src
+    (<span style="font-weight: bold;">push</span> '(habr elfeed-habr-tag)
+          elfeed-search-face-alist)
+<span style="font-weight: bold; font-style: italic;">#+end_src</span>
 </pre>
 </div>
 <p>
@@ -507,11 +524,11 @@ org-файл в исполняемый файл el и запускать его,
 </p>
 <div class="org-src-container">
 <pre class="src src-emacs-lisp">(use-package elfeed-org
-  :init
-  (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
-  :config
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> rmh-elfeed-org-files '(<span style="font-style: italic;">"~/org/elfeed.org"</span>))
+  <span style="font-weight: bold;">:config</span>
   (elfeed-org)
-  (ignore-errors (org-babel-load-file "~/org/elfeed.org")))
+  (<span style="font-weight: bold;">ignore-errors</span> (org-babel-load-file <span style="font-style: italic;">"~/org/elfeed.org"</span>)))
 </pre>
 </div>
 
@@ -521,9 +538,9 @@ org-файл в исполняемый файл el и запускать его,
 </div>
 </div>
 
-<div id="outline-container-org654929d" class="outline-3">
-<h3 id="org654929d">Оформление</h3>
-<div class="outline-text-3" id="text-org654929d">
+<div id="outline-container-org582d4e9" class="outline-3">
+<h3 id="org582d4e9">Оформление</h3>
+<div class="outline-text-3" id="text-org582d4e9">
 <p>
 Просто маленькое украшение:
 </p>
@@ -532,104 +549,104 @@ org-файл в исполняемый файл el и запускать его,
 <li>Увеличу длину строки названия до 100 символов:</li>
 </ul>
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">;; elfeed
+<pre class="src src-emacs-lisp"><span style="font-weight: bold; font-style: italic;">;; </span><span style="font-weight: bold; font-style: italic;">elfeed</span>
 (use-package elfeed
-  :bind ("C-x w" . elfeed)
-  :config
-  (when run-on-win-p
-    (setq elfeed-use-curl nil))
-  (defun elfeed-search-format-date (date)
-    (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
-  (setq elfeed-search-title-max-width 100))
+  <span style="font-weight: bold;">:bind</span> (<span style="font-style: italic;">"C-x w"</span> . elfeed)
+  <span style="font-weight: bold;">:config</span>
+  (<span style="font-weight: bold;">when</span> run-on-win-p
+    (<span style="font-weight: bold;">setq</span> elfeed-use-curl nil))
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">elfeed-search-format-date</span> (date)
+    (format-time-string <span style="font-style: italic;">"%Y-%m-%d %H:%M"</span> (seconds-to-time date)))
+  (<span style="font-weight: bold;">setq</span> elfeed-search-title-max-width 100))
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgad09eb7" class="outline-2">
-<h2 id="orgad09eb7">Итоговые файлы</h2>
-<div class="outline-text-2" id="text-orgad09eb7">
+<div id="outline-container-org6020b3f" class="outline-2">
+<h2 id="org6020b3f">Итоговые файлы</h2>
+<div class="outline-text-2" id="text-org6020b3f">
 </div>
-<div id="outline-container-orgc2abcb3" class="outline-3">
-<h3 id="orgc2abcb3">init.el</h3>
-<div class="outline-text-3" id="text-orgc2abcb3">
+<div id="outline-container-org1f97b5a" class="outline-3">
+<h3 id="org1f97b5a">init.el</h3>
+<div class="outline-text-3" id="text-org1f97b5a">
 <div class="org-src-container">
-<pre class="src src-emacs-lisp">(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+<pre class="src src-emacs-lisp">(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">package</span>)
+(add-to-list 'package-archives '(<span style="font-style: italic;">"melpa"</span> . <span style="font-style: italic;">"https://melpa.org/packages/"</span>) t)
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
+(<span style="font-weight: bold;">unless</span> (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
-(require 'use-package)
-(setq use-package-always-ensure t)
+(<span style="font-weight: bold;">require</span> '<span style="font-weight: bold; text-decoration: underline;">use-package</span>)
+(<span style="font-weight: bold;">setq</span> use-package-always-ensure t)
 
-(defvar run-on-win-p (eq system-type 'windows-nt))
+(<span style="font-weight: bold;">defvar</span> <span style="font-weight: bold; font-style: italic;">run-on-win-p</span> (eq system-type 'windows-nt))
 
 (use-package elfeed
-  :bind ("C-x w" . elfeed)
-  :config
-  (when run-on-win-p
-    (setq elfeed-use-curl nil))
-  (defun elfeed-search-format-date (date)
-    (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
-  (setq elfeed-search-title-max-width 100))
+  <span style="font-weight: bold;">:bind</span> (<span style="font-style: italic;">"C-x w"</span> . elfeed)
+  <span style="font-weight: bold;">:config</span>
+  (<span style="font-weight: bold;">when</span> run-on-win-p
+    (<span style="font-weight: bold;">setq</span> elfeed-use-curl nil))
+  (<span style="font-weight: bold;">defun</span> <span style="font-weight: bold;">elfeed-search-format-date</span> (date)
+    (format-time-string <span style="font-style: italic;">"%Y-%m-%d %H:%M"</span> (seconds-to-time date)))
+  (<span style="font-weight: bold;">setq</span> elfeed-search-title-max-width 100))
 
 (use-package elfeed-org
-  :init
-  (setq rmh-elfeed-org-files '("~/org/elfeed.org"))
-  :config
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> rmh-elfeed-org-files '(<span style="font-style: italic;">"~/org/elfeed.org"</span>))
+  <span style="font-weight: bold;">:config</span>
   (elfeed-org)
-  (ignore-errors (org-babel-load-file "~/org/elfeed.org")))
+  (<span style="font-weight: bold;">ignore-errors</span> (org-babel-load-file <span style="font-style: italic;">"~/org/elfeed.org"</span>)))
 </pre>
 </div>
 </div>
 </div>
-<div id="outline-container-orgbd79831" class="outline-3">
-<h3 id="orgbd79831">elfeed.org</h3>
-<div class="outline-text-3" id="text-orgbd79831">
+<div id="outline-container-orgfc9e5b7" class="outline-3">
+<h3 id="orgfc9e5b7">elfeed.org</h3>
+<div class="outline-text-3" id="text-orgfc9e5b7">
 <div class="org-src-container">
-<pre class="src src-org">* Feeds                                                    :elfeed:
-** [[https://habr.com/ru/rss/best/daily/?fl=ru][Хабр]]       :habr:
-** golang                                                  :golang:
-*** https://cprss.s3.amazonaws.com/golangweekly.com.xml
-** emacs                                                    :emacs:
-*** http://www.reddit.com/r/emacs/.rss
-*** http://www.reddit.com/r/orgmode/.rss                      :org:
-*** https://emacs.stackexchange.com/feeds
-*** https://sachachua.com/blog/feed                          :blog:
-*** https://irreal.org/blog/?feed=rss2                       :blog:
-*** http://pragmaticemacs.com/feed/                          :blog:
-* Tag coloring
-** emacs
-#+begin_src elisp
-    (defface elfeed-emacs-tag
-      '((t :foreground "gold"))
-      "color for emacs tag in elfeed")
+<pre class="src src-org"><span style="font-weight: bold;">* Feeds                                                    </span><span style="font-weight: bold;">:elfeed:</span>
+<span style="font-weight: bold; font-style: italic;">** </span><span style="text-decoration: underline;"><a href="https://habr.com/ru/rss/best/daily/?fl=ru">&#1061;&#1072;&#1073;&#1088;</a></span><span style="font-weight: bold; font-style: italic;">       </span><span style="font-weight: bold; font-style: italic;">:habr:</span>
+<span style="font-weight: bold; font-style: italic;">** golang                                                  </span><span style="font-weight: bold; font-style: italic;">:golang:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://cprss.s3.amazonaws.com/golangweekly.com.xml">https://cprss.s3.amazonaws.com/golangweekly.com.xml</a></span>
+<span style="font-weight: bold; font-style: italic;">** emacs                                                    </span><span style="font-weight: bold; font-style: italic;">:emacs:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/emacs/.rss">http://www.reddit.com/r/emacs/.rss</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://www.reddit.com/r/orgmode/.rss">http://www.reddit.com/r/orgmode/.rss</a></span><span style="font-weight: bold;">                      </span><span style="font-weight: bold;">:org:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://emacs.stackexchange.com/feeds">https://emacs.stackexchange.com/feeds</a></span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://sachachua.com/blog/feed">https://sachachua.com/blog/feed</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="https://irreal.org/blog/?feed=rss2">https://irreal.org/blog/?feed=rss2</a></span><span style="font-weight: bold;">                       </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">*** </span><span style="text-decoration: underline;"><a href="http://pragmaticemacs.com/feed/">http://pragmaticemacs.com/feed/</a></span><span style="font-weight: bold;">                          </span><span style="font-weight: bold;">:blog:</span>
+<span style="font-weight: bold;">* Tag coloring</span>
+<span style="font-weight: bold; font-style: italic;">** emacs</span>
+<span style="font-weight: bold; font-style: italic;">#+begin_src elisp</span>
+    (<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-emacs-tag</span>
+      '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"gold"</span>))
+      <span style="font-style: italic;">"color for emacs tag in elfeed"</span>)
 
-    (push '(emacs elfeed-emacs-tag)
-	  elfeed-search-face-alist)
-#+end_src
-** habr
-#+begin_src elisp
-    (defface elfeed-habr-tag
-      '((t :foreground "#78a2b7"))
-      "color for habr tag in elfeed")
+    (<span style="font-weight: bold;">push</span> '(emacs elfeed-emacs-tag)
+          elfeed-search-face-alist)
+<span style="font-weight: bold; font-style: italic;">#+end_src</span>
+<span style="font-weight: bold; font-style: italic;">** habr</span>
+<span style="font-weight: bold; font-style: italic;">#+begin_src elisp</span>
+    (<span style="font-weight: bold;">defface</span> <span style="font-weight: bold; font-style: italic;">elfeed-habr-tag</span>
+      '((t <span style="font-weight: bold;">:foreground</span> <span style="font-style: italic;">"#78a2b7"</span>))
+      <span style="font-style: italic;">"color for habr tag in elfeed"</span>)
 
-    (push '(habr elfeed-habr-tag)
-	  elfeed-search-face-alist)
-#+end_src
+    (<span style="font-weight: bold;">push</span> '(habr elfeed-habr-tag)
+          elfeed-search-face-alist)
+<span style="font-weight: bold; font-style: italic;">#+end_src</span>
 </pre>
 </div>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org647b60a" class="outline-2">
-<h2 id="org647b60a">Шпаргалка по сочетаниям клавиш</h2>
-<div class="outline-text-2" id="text-org647b60a">
+<div id="outline-container-org28cb0f4" class="outline-2">
+<h2 id="org28cb0f4">Шпаргалка по сочетаниям клавиш</h2>
+<div class="outline-text-2" id="text-org28cb0f4">
 <p>
 В принципе, перечисленных ниже команд должно быть достаточно чтобы пользоваться elfeed.
 Остальные можно подсмотреть по <code>C-h m</code>.
