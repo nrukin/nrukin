@@ -13,23 +13,9 @@
 (setq org-export-default-language "ru")
 (setq org-export-time-stamp-file nil)
 
-(setq org-html-preamble "<link rel='stylesheet' type='text/css' href='css/site.css' />
-<!-- <div class='intro'>
-  <h1>
-    <span class='gray'>John</span>
-    <span class='black'>Doe</span>
-  </h1>
-  <p>Emacser</p>
-</div> -->
-
-<div class='nav'>
-  <ul>
-    <li><a href='index.html'>В начало</a>.</li>
-    <!-- <li><a href='https://github.com/nrukin/'>GitHub</a>.</li> -->
-    <!-- <li><a href='/index.xml'>RSS</a>.</li> -->
-    <li><a href='about.html'>About</a>.</li>
-  </ul>
-</div>")
+(setq org-html-preamble (with-temp-buffer
+			  (insert-file-contents "templates/preamble.html")
+			  (buffer-string)))
 
 (defun blog/org-publish-org-sitemap-format-entry (entry style project)
   (format "%s - [[file:%s][%s]]"
