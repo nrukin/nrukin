@@ -1,5 +1,0 @@
-#+title: img-tst1
-#+date: <2023-07-25>
-#+keywords: draft
-
-[[file:../static/tst-img/cat.jpeg]]
