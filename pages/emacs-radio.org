@@ -1,0 +1,133 @@
+#+title: Радио не выходя из emacs
+#+date: <2023-09-20>
+#+keywords: emacs emms
+
+Очень давно хотел поковыряться с встраиваемым в emacs медиаплеером EMMS и настроить
+его для прослушивания радио (на самом деле называть его медиаплеером, наверное, не очень
+правильно, т.к. сам он ничего не проигрывает, а управляет другим плеером установленным
+в системе, но не суть)
+
+Документация очень объемная и развернутая: https://www.gnu.org/software/emms/manual/
+
+* Установка и настройка
+
+В первую очередь понадобится проигрыватель =mpv= - для проигрывания интернет-радио
+он мне понравился больше чем vlc, к тому же через него прокидывается тег играющей песни.
+
+#+begin_src shell
+sudo apt install mpv
+#+end_src
+
+Затем в =init.el= добавляю инициализацию emms через =use-package=.
+
+#+begin_src emacs-lisp
+  (use-package emms
+    :config
+    (require 'emms-setup)
+    (emms-all)
+    (setq emms-player-list '(emms-player-mpv)
+	  emms-info-functions '(emms-info-native))
+    (customize-set-variable 'emms-player-mpv-update-metadata t)
+    (setq emms-streams-file "~/.emacs.d/.secret/streams.emms")
+
+
+    (defun my/emms-track-description (track)
+      (if (eq (emms-track-type track) 'url)
+	  (let ((rdo (emms-track-get track 'radio))
+		(infttl (emms-track-get track 'info-title)))
+	    (if (and rdo infttl)	    
+		(format "%-30s: %s" rdo infttl)
+	      (if rdo rdo
+		(emms-track-simple-description track))))
+	(emms-track-simple-description track)))
+
+    (setq emms-track-description-function 'my/emms-track-description))
+#+end_src
+
+большинство настроек оставлены стандартными и по умолчанию.
+
++ =(customize-set-variable 'emms-player-mpv-update-metadata t)= - нужно для автоматического обновления названия песни которая сейчас играет на радио
++ =(setq emms-streams-file "~/.emacs.d/.secret/streams.emms")= - переопределяю расположение файла со списком радиостанций, по умолчанию он =~/.emacs.d/emms/streams.emms=, но я хочу чтобы все локальные конфиги лежали в отдельном каталоге =./secret=
+
+* Плейлист
+Файл плейлиста - обычный текстовый файл содержащий код elisp (но это не принципиально).
+Главное про этот файл: первая строка файла должна быть комментарием =;;; This is an EMMS playlist file=, а список станций задаётся в формате скобок.
+
+Каждая радиостанция - объект с полями:
+| Поле  | Значение                                          |
+|-------+---------------------------------------------------|
+| type  | Для интернет-радио =url=                          |
+| name  | Ссылка на поток                                   |
+| radio | Название радиостанции, как она будет отображаться |
+
+Поле =radio= я добавил специально для функции форматирования.
+
+Часть моего файла =streams.emms=:
+
+#+begin_src emacs-lisp
+  ;;; This is an EMMS playlist file
+
+  ((*track* (type . url)
+	    (name . "https://maximum.hostingradio.ru/maximum96.aacp")
+	    (radio . "Maximum Radio"))
+   (*track* (type . url)
+	    (name . "https://maximum-russian.hostingradio.ru/maxrussian96.aacp")
+	    (radio . "Maximum - RUSSIAN"))
+   (*track* (type . url)
+	    (name . "https://maximum-britpop.hostingradio.ru/maxbritpop96.aacp")
+	    (radio . "Maximum - BRITPOP"))
+   (*track* (type . url)
+	    (name . "https://maximum-nirvana.hostingradio.ru/nirvana96.aacp")
+	    (radio . "Maximum - NIRVANA"))
+   (*track* (type . url)
+	    (name . "https://maximum-punk.hostingradio.ru/maxpunk96.aacp")
+	    (radio . "Maximum - PUNK"))
+   (*track* (type . url)
+	    (name . "https://maximum-rammstein.hostingradio.ru/rammstein96.aacp")
+	    (radio . "Maximum - RAMMSTEIN"))
+   (*track* (type . url)
+	    (name . "http://149.56.155.73:8080/stream")
+	    (radio . "REAL PUNK RADIO"))
+   (*track* (type . url)
+	    (name . "https://radiorecord.hostingradio.ru/rock96.aacp")
+	    (radio . "Радио Рекорд - Рок"))
+   (*track* (type . url)
+	    (name . "https://emgspb.hostingradio.ru/eldoradio128.mp3")
+	    (radio . "Эльдорадио")))
+#+end_src
+
+При редактировании файла нужно следить чтобы скобки были сбалансированы.
+
+* Функция форматирования
+Я написал небольшую функцию и повесил её на обновление описания играющего трека,
+теперь радиостанция представляется как содержимое поля =radio= и представление
+играющего трека полученного из автообновляемого поля =info-title=. 
+
+#+begin_src emacs-lisp
+  (defun my/emms-track-description (track)
+      (if (eq (emms-track-type track) 'url)
+	  (let ((rdo (emms-track-get track 'radio))
+		(infttl (emms-track-get track 'info-title)))
+	    (if (and rdo infttl)	    
+		(format "%-30s: %s" rdo infttl)
+	      (if rdo rdo
+		(emms-track-simple-description track))))
+	(emms-track-simple-description track)))
+
+    (setq emms-track-description-function 'my/emms-track-description)
+#+end_src
+
+Название обновляется только у станции которая играет в данный момент, названия
+у неиграющих станций остаются без изменения и показывают последнюю песню
+которая играла во время прослушивания. Ну чтож.
+
+* Прослушивание музыки
+Проигрыватель запускается в emacs по команде =M-x emms-streams= (можно назначить на какое-нибудь сочетание клавиш, я же
+просто вывел ссылку на [[https://github.com/emacs-dashboard/emacs-dashboard][dashboard]]). Если всё настроено правильно: откроется список радиостанций, управление простое:
++ =Стрелки вверх/вниз= - переключение фокуса
++ =RET= - играть
++ =s= - остановить
++ =n= / =p= - включить следующую / предыдущую станцию.
+
+Теперь нет необходимости держать в фоне отдельный проигрыватель для прослушивания радио, а управлять воспроизведением
+можно не выходя из emacs.
