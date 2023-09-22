@@ -131,13 +131,81 @@ found: 55252; time: 0.9880800247192383
 
 * Golang
 
+#+begin_src go
+  package main
+
+  import (
+	  "fmt"
+	  "math"
+	  "time"
+  )
+
+  func main() {
+	  s := time.Now()
+	  r := 0
+	  for i := 0.0; i <= 999999.0; i++ {
+
+		  if int(math.Floor(i/100000.))%10+
+			  int(math.Floor(i/10000.))%10+
+			  int(math.Floor(i/1000.))%10 ==
+			  int(math.Floor(i/100.))%10+
+				  int(math.Floor(i/10.))%10+
+				  int(math.Floor(i/1.))%10 {
+			  r++
+		  }
+
+	  }
+	  e := time.Now()
+	  fmt.Printf("found: %d; time: %v", r, e.Sub(s))
+  }
+#+end_src
+
+#+begin_example
+  found: 55252; time: 30.6257ms
+  found: 55252; time: 26.9537ms
+  found: 55252; time: 34.6804ms
+#+end_example
+
 * Elisp
+
+#+begin_src emacs-lisp
+  (defun lucky-numbers ()
+    (interactive)
+    "Считаем счастливые номера билетов от 000000 до 999999, замеряем время выполнения"
+    (let ((num 0)
+	  (res 0)
+	  (start-time (current-time)))
+      (while (<= num 999999)
+	(when 
+	    (= (+ (% (floor (/ num 100000)) 10)
+		  (% (floor (/ num 10000)) 10)
+		  (% (floor (/ num 1000)) 10))
+	       (+ (% (floor (/ num 100)) 10)
+		  (% (floor (/ num 10)) 10)
+		  (% (floor (/ num 1)) 10)))
+	  (setq res (1+ res)))
+	(setq num (1+ num)))
+      (message "found %s; time %.3fs"
+	       res (float-time (time-subtract (current-time) start-time)))))
+
+  (progn 
+    (lucky-numbers)
+    (lucky-numbers)
+    (lucky-numbers))
+#+end_src
+
+#+begin_example
+  found 55252; time 2.181s
+  found 55252; time 2.403s
+  found 55252; time 2.052s
+#+end_example
 
 * Итоги
 | Язык   | Алгоритм  | Время выполнения, с |
 |--------+-----------+---------------------|
-| 1С     | Числа     | 6,493               |
-| 1С     | Строки    | 15,557              |
-| Python | Итерации  | 1.141               |
-| Python | Генератор | 0.966               |
-| Go     |           |                     |
+| 1С     | Числа     |               6,493 |
+| 1С     | Строки    |              15,557 |
+| Python | Итерации  |               1.141 |
+| Python | Генератор |               0.966 |
+| Go     |           |               0.027 |
+| Elisp  |           |               2.052 |
