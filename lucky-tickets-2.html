@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Подсчет счастливых билетов на Python</title>
+<meta name="generator" content="Org mode" />
+<meta name="keywords" content="python lucky-tickets" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94443125, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94443125" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<link rel='stylesheet' type='text/css' href='css/site.css' />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<!-- <div class='intro'>
+  <h1>
+    <span class='gray'>John</span>
+    <span class='black'>Doe</span>
+  </h1>
+  <p>Emacser</p>
+</div> -->
+
+<div class='nav'>
+  <ul>
+    <li><a href='index.html'>В начало</a>.</li>
+    <!-- <li><a href='https://github.com/nrukin/'>GitHub</a>.</li> -->
+    <!-- <li><a href='/index.xml'>RSS</a>.</li> -->
+    <li><a href='about.html'>About</a>.</li>
+  </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">Подсчет счастливых билетов на Python</h1>
+<p>
+Яндекс.Метрика показывает несколько визитов <a href="./lucky-tickets.html">предыдущего поста</a> по поисковым запросам "Счастливые билеты Python".
+</p>
+
+<p>
+Погуглил - оказывается есть такая олимпиадная задача.
+</p>
+
+<p>
+Ну чтож, я не то чтобы большой специалист по Python, но почему бы и не да? Задачка кажется интересной.
+</p>
+
+<p>
+Сформулирую задачу: <i>Посчитать количество счастливых билетов в выборке 10<sup>(2*n+1)</sup>-1 где n задается пользователем</i>.
+</p>
+
+<p>
+Проще говоря - пользователь задает 3, значит берем бобину(хе) из 10<sup>(2*3+1)</sup>-1=999999 билетов и находим сколько из них счастливых.
+Напомню - счастливый билет это билет у которого сумма цифр в левой половине равна сумме цифр в правой половине.
+</p>
+
+<p>
+Во-вторых: википедия говорит что для этой задачи есть формула, я сделаю вид что не знаю о её существовании, решать задачу
+буду алгоритмически.
+</p>
+
+<div id="outline-container-orgb5c57e8" class="outline-2">
+<h2 id="orgb5c57e8">Вариант 1. Примитивный</h2>
+<div class="outline-text-2" id="text-orgb5c57e8">
+<p>
+Самый простой алгоритм:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> sys
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">countTickets</span>(n):
+    <span style="font-weight: bold; font-style: italic;">res</span> = 0
+    <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1042; &#1094;&#1080;&#1082;&#1083;&#1077; &#1087;&#1077;&#1088;&#1077;&#1073;&#1080;&#1088;&#1072;&#1077;&#1084; &#1074;&#1089;&#1077; &#1074;&#1072;&#1088;&#1080;&#1072;&#1085;&#1090;&#1099; &#1074; &#1074;&#1099;&#1073;&#1086;&#1088;&#1082;&#1077;</span>
+    <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(<span style="font-weight: bold;">pow</span>(10, 2 * n)):
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1042; &#1082;&#1072;&#1078;&#1076;&#1086;&#1081; &#1080;&#1090;&#1077;&#1088;&#1072;&#1094;&#1080;&#1080; &#1094;&#1080;&#1082;&#1083;&#1072; &#1087;&#1086;&#1087;&#1088;&#1086;&#1073;&#1091;&#1077;&#1084;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1087;&#1086;&#1085;&#1103;&#1090;&#1100; - &#1103;&#1074;&#1083;&#1103;&#1077;&#1090;&#1089;&#1103; &#1083;&#1080; &#1085;&#1072;&#1096; &#1073;&#1080;&#1083;&#1077;&#1090;&#1080;&#1082; &#1089;&#1095;&#1072;&#1089;&#1090;&#1083;&#1080;&#1074;&#1099;&#1084; &#1080;&#1083;&#1080; &#1085;&#1077;&#1090;</span>
+
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1055;&#1088;&#1077;&#1086;&#1073;&#1088;&#1072;&#1079;&#1091;&#1077;&#1084; &#1095;&#1080;&#1089;&#1083;&#1086; &#1074; &#1082;&#1086;&#1088;&#1090;&#1077;&#1078; &#1095;&#1080;&#1089;&#1077;&#1083;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1076;&#1083;&#1103; &#1101;&#1090;&#1086;&#1075;&#1086; &#1082;&#1086;&#1085;&#1074;&#1077;&#1088;&#1090;&#1080;&#1088;&#1091;&#1077;&#1084; &#1095;&#1080;&#1089;&#1083;&#1086; &#1074; &#1089;&#1090;&#1088;&#1086;&#1082;&#1091; &#1089; &#1083;&#1080;&#1076;&#1080;&#1088;&#1091;&#1102;&#1097;&#1080;&#1084;&#1080;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1085;&#1086;&#1083;&#1103;&#1084;&#1080;, &#1072; &#1079;&#1072;&#1090;&#1077;&#1084; &#1088;&#1072;&#1079;&#1083;&#1086;&#1078;&#1080;&#1084; &#1089;&#1090;&#1088;&#1086;&#1082;&#1091; &#1085;&#1072; &#1086;&#1090;&#1076;&#1077;&#1083;&#1100;&#1085;&#1099;&#1077; &#1089;&#1080;&#1084;&#1074;&#1086;&#1083;&#1099;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1080; &#1082;&#1086;&#1085;&#1074;&#1077;&#1088;&#1090;&#1080;&#1088;&#1091;&#1077;&#1084; &#1086;&#1073;&#1088;&#1072;&#1090;&#1085;&#1086;</span>
+        <span style="font-weight: bold; font-style: italic;">d</span> = [<span style="font-weight: bold;">int</span>(q) <span style="font-weight: bold;">for</span> q <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">str</span>(i).zfill(n*2)]
+
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1087;&#1088;&#1080; &#1087;&#1086;&#1084;&#1086;&#1097;&#1080; &#1089;&#1088;&#1077;&#1079;&#1086;&#1074; &#1087;&#1086;&#1089;&#1095;&#1080;&#1090;&#1072;&#1077;&#1084; &#1089;&#1091;&#1084;&#1084;&#1099; &#1083;&#1077;&#1074;&#1086;&#1081;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1080; &#1087;&#1088;&#1072;&#1074;&#1086;&#1081; &#1087;&#1086;&#1083;&#1086;&#1074;&#1080;&#1085;&#1086;&#1082; &#1082;&#1086;&#1088;&#1090;&#1077;&#1078;&#1072;, &#1080; &#1080;&#1085;&#1082;&#1088;&#1077;&#1084;&#1077;&#1085;&#1088;&#1080;&#1090;&#1091;&#1077;&#1084; &#1089;&#1095;&#1077;&#1090;&#1095;&#1080;&#1082;</span>
+        <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1087;&#1088;&#1080; &#1089;&#1086;&#1074;&#1087;&#1072;&#1076;&#1077;&#1085;&#1080;&#1080;</span>
+        <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">sum</span>(d[:n]) == <span style="font-weight: bold;">sum</span>(d[n:]):
+            <span style="font-weight: bold; font-style: italic;">res</span>+=1
+
+    <span style="font-weight: bold;">return</span> res
+
+<span style="font-weight: bold;">if</span> <span style="font-weight: bold;">__name__</span> == <span style="font-style: italic;">"__main__"</span>:
+    <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1047;&#1085;&#1072;&#1095;&#1077;&#1085;&#1080;&#1077; &#1087;&#1086;-&#1091;&#1084;&#1086;&#1083;&#1095;&#1072;&#1085;&#1080;&#1102;</span>
+    <span style="font-weight: bold; font-style: italic;">n</span> = 3
+    <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1087;&#1088;&#1086;&#1074;&#1077;&#1088;&#1103;&#1077;&#1084; - &#1077;&#1089;&#1083;&#1080; &#1073;&#1099;&#1083; &#1087;&#1077;&#1088;&#1077;&#1076;&#1072;&#1085; &#1087;&#1072;&#1088;&#1072;&#1084;&#1077;&#1090;&#1088;</span>
+    <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1082;&#1086;&#1084;&#1072;&#1085;&#1076;&#1085;&#1086;&#1081; &#1089;&#1090;&#1088;&#1086;&#1082;&#1080; - &#1080;&#1089;&#1087;&#1086;&#1083;&#1100;&#1079;&#1091;&#1077;&#1084; &#1077;&#1075;&#1086;</span>
+    <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">len</span>(sys.argv) &gt; 1:
+        <span style="font-weight: bold; font-style: italic;">n</span> = <span style="font-weight: bold;">int</span>(sys.argv[1])
+
+    <span style="font-weight: bold; font-style: italic;">res</span> = countTickets(n)
+
+    <span style="font-weight: bold; font-style: italic;"># </span><span style="font-weight: bold; font-style: italic;">&#1042;&#1099;&#1074;&#1077;&#1076;&#1077;&#1084; &#1088;&#1077;&#1079;&#1091;&#1083;&#1100;&#1090;&#1072;&#1090;. &#1048;&#1089;&#1087;&#1086;&#1083;&#1100;&#1079;&#1091;&#1077;&#1084; f-string, &#1086;&#1085;&#1080; &#1087;&#1088;&#1080;&#1082;&#1086;&#1083;&#1100;&#1085;&#1099;&#1077;</span>
+    <span style="font-weight: bold;">print</span>(f<span style="font-style: italic;">'&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: {res}'</span>)
+</pre>
+</div>
+
+<p>
+В принципе в комментариях всё подробно расписано - из параметров командной строки передается параметр,
+формируем цикл, преобразуем число в строку, разбиваем на символы, собираем обратно, считаем суммы левой и правой половин.
+</p>
+
+<p>
+Сохраним файл под именем <code>v01.py</code> и запустим выполнение.
+</p>
+
+<p>
+Выполним пару пробных запусков:
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">&gt; python3 v01.py 1
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 10
+
+&gt; python3 v01.py 2
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 670
+
+&gt; python3 v01.py 3
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 55252
+
+&gt; python3 v01.py
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 55252
+</pre>
+</div>
+
+<p>
+Вроде похоже на правду.
+Результаты последних двух одинаковы потому что 3 - значение по-умолчанию.
+</p>
+
+<p>
+Параметры до трех отрабатывают почти мгновенно, четверка заставила ноут задуматься на три минуты,
+пятерки я не дождался.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">&gt; time python3 v01.py 4
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 4816030
+
+real    3m31.292s
+user    3m31.229s
+sys     0m0.035s
+</pre>
+</div>
+<p>
+Выполнение расчета при n=4 с замером времени выполнения
+</p>
+
+<p>
+Здесь однозначно есть место для оптимизации алгоритма.
+</p>
+</div>
+
+<div id="outline-container-org929d945" class="outline-3">
+<h3 id="org929d945">Многопоточное выполнение</h3>
+<div class="outline-text-3" id="text-org929d945">
+<p>
+Очевидно что у нас есть некоторый набор расчетов, каждый из которых не зависит от расчетов других,
+значит мы смело можем разбить наш список на несколько раздельных списков и вычислить в несколько
+параллельных потоков. Т.е., например, мы хотим посчитать билеты от 0 до 99: разобъем все 100 билетов
+на 4 пачки:
+</p>
+<ul class="org-ul">
+<li>00-24</li>
+<li>24-49</li>
+<li>50-74</li>
+<li>75-99</li>
+</ul>
+<p>
+И запустим четые параллельных расчета, а в конце отсуммируем результаты.
+Расчет должен будет выполниться в четыре раза быстрее.
+</p>
+
+<p>
+Писать этот алгоритм мне стало лениво, да и он совершенно не решает проблему со сложностью
+базового алгоритма - на n больше 4 расчет всё так же будет занимать продолжительное время,
+пусть и поделенное на несколько потоков.
+</p>
+
+<p>
+Короче история бесперспективная, забросать задачу железом (а это именно оно, т.к. речь идет о ядрах процессора)
+здесь не получится.
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-orgfd5ac1a" class="outline-2">
+<h2 id="orgfd5ac1a">Вариант 2</h2>
+<div class="outline-text-2" id="text-orgfd5ac1a">
+<p>
+Очевидно что предыдущий вариант не самый оптимальный.
+</p>
+
+<p>
+Попробуем взглянуть на задачу под другим углом.
+</p>
+
+<p>
+<b>Мысль 1</b>: количество сумм ограничено количеством разрядов: т.е. при n=3 самая маленькая сумма
+будет 0 (для комбинации 000), а самая большая будет 27 (для комбинации 999), остальные суммы
+будут находиться где-то между ними. Для каждой суммы будет определенное число комбинаций, из которых
+её можно составить. Например сумма 3 может быть получена десятью комбинациями:
+</p>
+<ul class="org-ul">
+<li>003</li>
+<li>012</li>
+<li>021</li>
+<li>030</li>
+<li>102</li>
+<li>111</li>
+<li>120</li>
+<li>201</li>
+<li>210</li>
+<li>300</li>
+</ul>
+
+<p>
+<b>Мысль 2</b>: Количество счастливых билетов по сумме 3 можно рассчитать как квадрат количества комбинаций,
+т.к. каждой комбинации слева будет соответсвовать 10 комбинаций справа 10*10 = 100. Получается для того чтобы
+посчитать количество всех счастливых билетов нужно посчитать количество комбинаций для каждой суммы, а затем
+отсуммировать квадраты количеств - это и будет нужный нам результат.
+</p>
+
+<p>
+<b>Мысль 3</b>: Посчитать количества комбинаций можно было бы итерационно, но в таком случае мы скатываемся
+в первый примитивный вариант решения - получили бы огромное количество итераций и опять долгое выполнение
+алгоритма.
+</p>
+
+<p>
+Представим комбинации цифр в виде дерева:
+</p>
+
+<p>
+<img src="../static/lucky-tickets-2/img1.png" alt="img1.png" />
+На картинке представлено дерево для двухзначных комбинаций начинающихся с 0.
+</p>
+
+<p>
+Теперь представим кусок дерева для трехзначного дерева:
+<img src="../static/lucky-tickets-2/img2.png" alt="img2.png" />
+Видно что паттерн повторяется: рисунок под четверкой полностью повторяет первую схему,
+но суммы, на этот раз, все становятся увеличенными на корень дерева (четверку).
+</p>
+
+<p>
+Этот принцип повторяется на протяжении всего дерева - каждый следующий уровень повторяет
+значения предыдущего уровня со сдвигом на значение корня.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> sys
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">countTickets</span>(n):
+    <span style="font-weight: bold; font-style: italic;">sumsPrev</span> = [1]
+    <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(n):
+        <span style="font-weight: bold; font-style: italic;">l</span> = (i + 1) * 9 + 1
+        <span style="font-weight: bold; font-style: italic;">sumsCurr</span> = [0] * l
+        <span style="font-weight: bold;">for</span> j <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(10):
+            <span style="font-weight: bold;">for</span> a, b <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">enumerate</span>(sumsPrev):
+                <span style="font-weight: bold; font-style: italic;">sumsCurr</span>[j + a] += b
+        <span style="font-weight: bold; font-style: italic;">sumsPrev</span> = sumsCurr
+    <span style="font-weight: bold; font-style: italic;">rs</span> = 0
+    <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> sumsPrev:
+        <span style="font-weight: bold; font-style: italic;">rs</span> += i * i
+    <span style="font-weight: bold;">return</span> rs
+
+<span style="font-weight: bold;">if</span> <span style="font-weight: bold;">__name__</span> == <span style="font-style: italic;">"__main__"</span>:
+    <span style="font-weight: bold; font-style: italic;">n</span> = 3
+    <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">len</span>(sys.argv) &gt; 1:
+        <span style="font-weight: bold; font-style: italic;">n</span> = <span style="font-weight: bold;">int</span>(sys.argv[1])
+    <span style="font-weight: bold; font-style: italic;">res</span> = countTickets(n)
+    <span style="font-weight: bold;">print</span>(f<span style="font-style: italic;">'&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: {res}'</span>)
+
+</pre>
+</div>
+
+<p>
+Код выполняет расчет используя этот принцип:
+</p>
+<ul class="org-ul">
+<li>Во внешнем цикле (i) мы итерируемся по разрядам - сначала обсчитываем
+суммы для 1 разряда, затем для двух и т.д.</li>
+<li>В массиве <code>sumsCurr</code> хранятся количества комбинаций в разрезе сумм. Индекс массива
+соответствует сумме, а значение - количеству комбинаций. Массив инициализируется
+нулями, количество элементов в массиве равно максимальной сумме для текущего разряда</li>
+<li>В массиве <code>SumsPrev</code> хранятся результаты итерации по предыдущему разряду</li>
+<li>В теле цикла массив <code>SumsCurr</code> десять раз заполняется <code>SumsPrev</code> со сдвигом и увеличением
+на текущее значение</li>
+<li>В конце, все элементы результирующего массива возводятся в квадрат и суммируются</li>
+</ul>
+
+<p>
+Сохраним файл под именем <code>v02.py</code> и запустим выполнение с замером времени.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-shell">&gt; time python3 v02.py 4
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 4816030
+
+real    0m0.086s
+user    0m0.066s
+sys     0m0.019s
+</pre>
+</div>
+<p>
+Расчет для четырех занял 86 миллисекунд
+</p>
+
+<p>
+Попробуем получить результаты для больших значений
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">&gt; time python3 v02.py 5
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 432457640
+
+real    0m0,026s
+user    0m0,023s
+sys     0m0,003s
+&gt; time python3 v02.py 10
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 3081918923741896840
+
+real    0m0,029s
+user    0m0,025s
+sys     0m0,004s
+&gt; time python3 v02.py 20
+&#1053;&#1072;&#1081;&#1076;&#1077;&#1085;&#1086; &#1073;&#1080;&#1083;&#1077;&#1090;&#1086;&#1074;: 218768894829904122626725603838896148680
+
+real    0m0,028s
+user    0m0,025s
+sys     0m0,003s
+</pre>
+</div>
+
+<p>
+Код выполняется значительно быстрее первого вариант, результаты похожи на правду.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 23 October 2023</p>
+</div>
+</body>
+</html>

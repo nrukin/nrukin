@@ -278,6 +278,10 @@ for the JavaScript code in this tag.
 </div>
 <div id="content">
 <h1 class="title">Задача счастливых билетиков и сравнение производительности языков</h1>
+<p class="verse">
+<b>Обновление от 23.10.2023</b>: Продолжение - <a href="./lucky-tickets-2.html">Решение задачи счастливых билетов в общем виде</a>.<br />
+</p>
+
 <p>
 Когда-то давно, когда я ещё учился в универе, на лекции по математике разбиралась
 формула определения количества счастливых билетов. Под счастливым билетом подразумевается
@@ -319,9 +323,9 @@ for the JavaScript code in this tag.
 для сравнения производительности, например, разных языков программирования.
 </p>
 
-<div id="outline-container-orgfc9daf3" class="outline-2">
-<h2 id="orgfc9daf3">О тестовой машине</h2>
-<div class="outline-text-2" id="text-orgfc9daf3">
+<div id="outline-container-org480de83" class="outline-2">
+<h2 id="org480de83">О тестовой машине</h2>
+<div class="outline-text-2" id="text-org480de83">
 <p>
 Весь код запускается на одной и той же машине, в связи с тем что здесь у нас участвует 1С, я буду использовать
 компьютер под управлением Windows на процессоре <b>AMD Ryzen 5 3500U</b>. Понятно что один и тот же тест будет 
@@ -334,13 +338,13 @@ for the JavaScript code in this tag.
 </p>
 </div>
 </div>
-<div id="outline-container-orgcf7f850" class="outline-2">
-<h2 id="orgcf7f850">1C</h2>
-<div class="outline-text-2" id="text-orgcf7f850">
+<div id="outline-container-org0a604e5" class="outline-2">
+<h2 id="org0a604e5">1C</h2>
+<div class="outline-text-2" id="text-org0a604e5">
 </div>
-<div id="outline-container-orgc36a89f" class="outline-3">
-<h3 id="orgc36a89f">Числа</h3>
-<div class="outline-text-3" id="text-orgc36a89f">
+<div id="outline-container-orge62529a" class="outline-3">
+<h3 id="orge62529a">Числа</h3>
+<div class="outline-text-3" id="text-orge62529a">
 <p>
 В первую очередь я переписал алгоритм на 1С. На этот раз я отказался от строковых конвертаций и от
 вывода результатов. Отказ от вывода значительно ускорил выполнение.
@@ -377,9 +381,9 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-orgb01c6d1" class="outline-3">
-<h3 id="orgb01c6d1">Строки</h3>
-<div class="outline-text-3" id="text-orgb01c6d1">
+<div id="outline-container-orgdf56fd4" class="outline-3">
+<h3 id="orgdf56fd4">Строки</h3>
+<div class="outline-text-3" id="text-orgdf56fd4">
 <p>
 Воспроизведу первый алгоритм - конвертируем число в строку, потом разбиваем строку на подстроки и обратно корвертируем в числа (ой):
 </p>
@@ -423,13 +427,13 @@ for the JavaScript code in this tag.
 </div>
 </div>
 
-<div id="outline-container-org3a1f533" class="outline-2">
-<h2 id="org3a1f533">Python</h2>
-<div class="outline-text-2" id="text-org3a1f533">
+<div id="outline-container-org8a6ebaa" class="outline-2">
+<h2 id="org8a6ebaa">Python</h2>
+<div class="outline-text-2" id="text-org8a6ebaa">
 </div>
-<div id="outline-container-orgadd0534" class="outline-3">
-<h3 id="orgadd0534">Прямой алгоритм</h3>
-<div class="outline-text-3" id="text-orgadd0534">
+<div id="outline-container-org09c0040" class="outline-3">
+<h3 id="org09c0040">Прямой алгоритм</h3>
+<div class="outline-text-3" id="text-org09c0040">
 <p>
 Всё тоже самое но уже на Python3.
 </p>
@@ -472,9 +476,9 @@ found: 55252; time: 1.1812174320220947
 </div>
 </div>
 
-<div id="outline-container-orgbb9d6ef" class="outline-3">
-<h3 id="orgbb9d6ef">Генератор</h3>
-<div class="outline-text-3" id="text-orgbb9d6ef">
+<div id="outline-container-org8cf2d45" class="outline-3">
+<h3 id="org8cf2d45">Генератор</h3>
+<div class="outline-text-3" id="text-org8cf2d45">
 <p>
 Вторая реализация не несет ничего нового, просто использует генераторы списков вместо итераций (это же Python, ну):
 </p>
@@ -508,9 +512,9 @@ found: 55252; time: 0.9880800247192383
 </div>
 </div>
 
-<div id="outline-container-orgc0b9fe9" class="outline-2">
-<h2 id="orgc0b9fe9">Go</h2>
-<div class="outline-text-2" id="text-orgc0b9fe9">
+<div id="outline-container-orge568ce9" class="outline-2">
+<h2 id="orge568ce9">Go</h2>
+<div class="outline-text-2" id="text-orge568ce9">
 <p>
 Перепишу алгоритм уже на Go.
 Так как используется метод Floor библиотеки math, который раборает с float64 значением, 
@@ -564,9 +568,9 @@ found: 55252; time: 34.6804ms
 </div>
 </div>
 
-<div id="outline-container-orgd0151ac" class="outline-2">
-<h2 id="orgd0151ac">Elisp</h2>
-<div class="outline-text-2" id="text-orgd0151ac">
+<div id="outline-container-org9661446" class="outline-2">
+<h2 id="org9661446">Elisp</h2>
+<div class="outline-text-2" id="text-org9661446">
 <p>
 Ну и как же без emacs lisp?
 </p>
@@ -614,9 +618,9 @@ found 55252; time 2.052s
 </div>
 </div>
 
-<div id="outline-container-org5ca5286" class="outline-2">
-<h2 id="org5ca5286">Итоги и выводы</h2>
-<div class="outline-text-2" id="text-org5ca5286">
+<div id="outline-container-org0f49068" class="outline-2">
+<h2 id="org0f49068">Итоги и выводы</h2>
+<div class="outline-text-2" id="text-org0f49068">
 <p>
 Для каждого замера я взял самый быстрый показатель:
 </p>
