@@ -5,9 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Табы в emacs</title>
+<title>(use-package emacs)</title>
 <meta name="generator" content="Org mode" />
-<meta name="keywords" content="emacs" />
+<meta name="keywords" content="emacs use-package" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -277,77 +277,92 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <div id="content">
-<h1 class="title">Табы в emacs</h1>
+<h1 class="title">(use-package emacs)</h1>
 <p>
-Узнал что в emacs есть возможность отображать табы, причём
-в ванильном емаксе есть даже два режима отображения табов: <a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Tab-Bars.html">Tab Bars</a> и
-<a href="https://www.gnu.org/software/emacs/manual/html_node/emacs/Tab-Line.html">Window Tab Line</a>. И первый и второй отображают вкладки но делают это по разному:
+Мне очень нравится <a href="https://github.com/jwiegley/use-package">use-package</a>: это, короче, такой макрос, который структурирует
+настройку пакетов (package) внутри emacs. Все команды настройки пакета, биндинги, хуки
+и остальное настраиваются в одной синтаксической конструкции <code>use-package</code>, что делает
+файл настроек более аккуратным и разбитым на логические блоки. В <code>use-package</code>, на самом
+деле, реально много прикольных и интересных настроек, но речь сейчас только о структурировании
+кода <code>init.el</code>.
 </p>
 
-<div id="outline-container-org3f8d1b8" class="outline-2">
-<h2 id="org3f8d1b8">Tab Bars</h2>
-<div class="outline-text-2" id="text-org3f8d1b8">
 <p>
-Включается командой <code>tab-bar-mode</code>, добавляет табы, причем каждый таб является
-полноценно настроенным окном emacs, типа <code>C-x 5 2</code>, только на этот раз всё
-в одном окне. И сочетания у них примерно одинаковые: префикс <code>C-x t</code> ведет себя как
-<code>C-x 5</code> только вместо окошек (фреймов) оперирует вкладками.
+Одно меня смущало во всей этой истории: код настроек самого emacs не относился ни к какому
+пакету, и находился на нулевом уровне иерархии файла, т.е. получается такая фигня:
 </p>
 
-<ul class="org-ul">
-<li>То что легко запоминается и возможно пригодится:
-<ul class="org-ul">
-<li><code>C-x t 2</code> - Создать новую вкладку</li>
-<li><code>C-x t 0</code> - Закрыть текущую вкладку</li>
-<li><code>C-x t 1</code> - Закрыть все остальные вкладки кроме текущей</li>
-<li><code>C-x t o</code> / <code>C-Tab</code> - Переключиться на следующую вкладку</li>
-<li><code>C-S-Tab</code> - Переключиться на предыдущую вкладку</li>
-<li><code>C-x t r</code> - Переименовать вкладку</li>
-</ul></li>
-<li>То что, скорее всего, никогда не пригодится:
-<ul class="org-ul">
-<li><code>C-x t b</code> - Запросить буфер и открыть его в новой вкладке</li>
-<li><code>C-x t f</code> - Запросить имя файла и открыть его в новой вкладке</li>
-<li><code>C-x t t</code> - Префикс, после него нужно вводить ещё одну команду.
-Команда будет выполнена в новой вкладке (сложно, ваще жесть)</li>
-</ul></li>
-</ul>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+(<span style="font-weight: bold;">setq</span> ring-bell-function 'ignore)
+(<span style="font-weight: bold;">setq</span> use-dialog-box nil)
+(<span style="font-weight: bold;">setq-default</span> cursor-type 'bar)
+(<span style="font-weight: bold;">if</span> (fboundp 'blink-cursor-mode) (blink-cursor-mode 0))
 
-<p>
-В принципе штука интересная, позволяет разделить разные задачи (проекты)
-в разные пространства, и, при этом всё остаётся в одном окне приложения.
-Но пока не очень понимаю нужна мне эта фича и буду ли я её использовать.
-Обычно для этой цели я использую <code>C-x 5 2</code>.
-</p>
-</div>
+(use-package magit
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> magit-commit-show-diff nil))
+
+  (use-package zenburn-theme
+    <span style="font-weight: bold;">:config</span>
+    (load-theme 'zenburn t))
+</pre>
 </div>
 
-<div id="outline-container-orgd32b02e" class="outline-2">
-<h2 id="orgd32b02e">Window Tab Line</h2>
-<div class="outline-text-2" id="text-orgd32b02e">
 <p>
-Эта штука попроще, включается через <code>global-tab-line-mode</code> и добавляет
-<b>ещё одну</b> панель вкладок, в которой, на этот раз, перечисляются
-все открытые когда-либо буферы. <code>C-x LEFT</code> и <code>C-x RIGHT</code> переключает
-между буферами.
+Коды настройки <code>zenburn-theme</code> и <code>magit</code> располагается в аккуратных блоках <code>use-package</code>,
+а общие настройки (скрытие панелек, отключение звука и диалогов, настройка курсора) в корне.
 </p>
 
 <p>
-Через <code>M-x customize-variable tab-line-tabs-function</code> можно
-поменять поведение панели вкладок, и, вместо открытых буферов,
-например, показать только вкладки буферов с тем же major-mode, или
-отображать все буферы, но они будут сгруппированы по своему major-mode.
+Я не нашел описания в документации, но увидел такое использование когда
+читал какие-то опубликованные пользовательские файлы конфигурации
+(ссылка, к сожалению, не сохранилась), наткнулся на <a href="https://www.reddit.com/r/emacs/comments/mk9ehd/curious_whats_the_use_of_usepackage_emacs/">обсуждение на reddit</a>.
 </p>
 
 <p>
-Но, как бы то ни было, <b>window tab line</b> в основном рассчитан на работу с
-мышью, и использовать его я, скорее всего, не буду.
+Глобальные настройки, не относящиеся к какому-то пакету можно располагать в блоке
+<code>(use-package emacs)</code>, и тогда файл настроек будет структурирован по одному уровню.
 </p>
+
+<p>
+Это не несет каких-то принципиальных изменений в логике, просто код становится
+более структурированным и читаемым; а, как написано в zen of python, <code>Readability counts.</code>
+</p>
+
+<p>
+Например код примера из начала можно переписать так:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">(use-package emacs
+  <span style="font-weight: bold;">:init</span>
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (<span style="font-weight: bold;">setq</span> ring-bell-function 'ignore)
+  (<span style="font-weight: bold;">setq</span> use-dialog-box nil)
+  (<span style="font-weight: bold;">setq-default</span> cursor-type 'bar)
+  (<span style="font-weight: bold;">if</span> (fboundp 'blink-cursor-mode) (blink-cursor-mode 0)))
+
+(use-package magit
+  <span style="font-weight: bold;">:init</span>
+  (<span style="font-weight: bold;">setq</span> magit-commit-show-diff nil))
+
+(use-package zenburn-theme
+  <span style="font-weight: bold;">:config</span>
+  (load-theme 'zenburn t))
+</pre>
 </div>
-</div>
+
+<p>
+Вроде небольшое изменение, но, как мне кажется, читаемость кода значительно повысилась.
+</p>
 </div>
 <div id="postamble" class="status">
-<p class="date">&#1044;&#1072;&#1090;&#1072;: 20 July 2023</p>
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 11 January 2024</p>
 </div>
 </body>
 </html>
