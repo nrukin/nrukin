@@ -1,0 +1,68 @@
+#+title: (use-package emacs)
+#+date: <2024-01-11>
+#+keywords: emacs use-package
+
+Мне очень нравится [[https://github.com/jwiegley/use-package][use-package]]: это, короче, такой макрос, который структурирует
+настройку пакетов (package) внутри emacs. Все команды настройки пакета, биндинги, хуки
+и остальное настраиваются в одной синтаксической конструкции =use-package=, что делает
+файл настроек более аккуратным и разбитым на логические блоки. В =use-package=, на самом
+деле, реально много прикольных и интересных настроек, но речь сейчас только о структурировании
+кода =init.el=.
+
+Одно меня смущало во всей этой истории: код настроек самого emacs не относился ни к какому
+пакету, и находился на нулевом уровне иерархии файла, т.е. получается такая фигня:
+
+#+begin_src emacs-lisp
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1)
+  (setq ring-bell-function 'ignore)
+  (setq use-dialog-box nil)
+  (setq-default cursor-type 'bar)
+  (if (fboundp 'blink-cursor-mode) (blink-cursor-mode 0))
+
+  (use-package magit
+    :init
+    (setq magit-commit-show-diff nil))
+
+    (use-package zenburn-theme
+      :config
+      (load-theme 'zenburn t))
+#+end_src
+
+Коды настройки =zenburn-theme= и =magit= располагается в аккуратных блоках =use-package=,
+а общие настройки (скрытие панелек, отключение звука и диалогов, настройка курсора) в корне.
+
+Я не нашел описания в документации, но увидел такое использование когда
+читал какие-то опубликованные пользовательские файлы конфигурации
+(ссылка, к сожалению, не сохранилась), наткнулся на [[https://www.reddit.com/r/emacs/comments/mk9ehd/curious_whats_the_use_of_usepackage_emacs/][обсуждение на reddit]].
+
+Глобальные настройки, не относящиеся к какому-то пакету можно располагать в блоке
+=(use-package emacs)=, и тогда файл настроек будет структурирован по одному уровню.
+
+Это не несет каких-то принципиальных изменений в логике, просто код становится
+более структурированным и читаемым; а, как написано в zen of python, =Readability counts.=
+
+Например код примера из начала можно переписать так:
+
+#+begin_src emacs-lisp
+  (use-package emacs
+    :init
+    (menu-bar-mode -1)
+    (scroll-bar-mode -1)
+    (tool-bar-mode -1)
+    (setq ring-bell-function 'ignore)
+    (setq use-dialog-box nil)
+    (setq-default cursor-type 'bar)
+    (if (fboundp 'blink-cursor-mode) (blink-cursor-mode 0)))
+
+  (use-package magit
+    :init
+    (setq magit-commit-show-diff nil))
+
+  (use-package zenburn-theme
+    :config
+    (load-theme 'zenburn t))
+#+end_src
+
+Вроде небольшое изменение, но, как мне кажется, читаемость кода значительно повысилась.
