@@ -1,0 +1,229 @@
+#+title: Телеграм-бот на Go для геотрекинга. Часть 1
+#+date: <2024-02-06>
+#+keywords: draft
+
+Наверняка в жизни каждого программиста периодически возникает
+желание напрограммировать какого-нибудь (/очередного/) бота.
+
+Вот и я решил написать telegram-бота, его идея появилась у меня давно:
+в telegram есть возможность делиться живой геопозицией; а я хочу отправлять боту
+живую геопозицию, а затем анализировать записанный ботом трек, как это делают
+разные фитнес-трекеры, но только без использования специальных программ и оборудования.
+
+Делать бота я буду на Go, просто потому что мне нравится этот язык и
+хочется пощупать его более подробно.
+
+Итак, поехали:
+
+* Создание проекта. Простой бот
+Создаем каталог проекта, инициализируем go-модуль
+#+begin_src shell
+  mkdir geotracker-bot && cd geotracker-bot
+  go mod init github.com/nrukin/geotracker-bot
+#+end_src
+
+Cоздам простой файл =main.go= с содержимым:
+#+begin_src go -n
+  package main
+
+  import (
+	  "log"
+	  "os"
+
+	  tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+  )
+
+  func main() {
+	  if len(os.Args) < 2 {
+		  log.Fatal("token not set")
+	  }
+	  token := os.Args[1]
+	  bot, err := tgbotapi.NewBotAPI(token)
+	  if err != nil {
+		  log.Panic(err)
+	  }
+	  log.Printf("Authorised on account %s", bot.Self.UserName)
+  }
+#+end_src
+
+В этом файле мы:
+1. Импортируем библиотеку [[https://github.com/go-telegram-bot-api/telegram-bot-api][telegram-bot-api]]
+2. Получаем токен телеграм бота из параметров командной строки
+3. Пытаемся авторизоваться в телеграм по полученному токену
+
+Для того чтобы проверить работу кода нужен токен бота, за этим надо обратиться к телеграм-боту [[https://t.me/BotFather][BotFather]]
+
+Далее, устанавливаем зависимости.
+#+begin_src shell
+  go mod tidy
+#+end_src
+
+И запускаем бота, конечно же, нужно заменить *=<TOKEN>=* на настоящий токен телеграм-бота.
+#+begin_src shell
+  go run . <TOKEN>
+#+end_src
+
+Если всё прошло удачно - в консоли будет выведено что-то типа =Authorised on account MyAwesomeBot=
+
+* Продолжение: Получение позиции
+Теперь нам нужно научиться получать координаты живой позиции и что-то с ними делать. Геокоординаты
+могут поступать двумя способами:
+
++ При первой отправке геопозиции приходит новое сообщение содержащее геокоординаты
++ Дальше приходят обновления первого сообщения с новыми координатами и новым временем
+
+Всё, теперь нам нужно научиться читать входящие сообщения (и их обновления), и получать
+из них геокоординаты.
+
+У tgbotapi есть богатая [[https://pkg.go.dev/github.com/go-telegram-bot-api/telegram-bot-api/v5][документация]].
+
+Напишем код который будет получать входящие сообщения и обновления сообщений,
+и будет получать из сообщений геопозицию.
+
+Для работы с геопозициями создадим новый тип =Location= с полями широты, долготы и времени позиции.
+
+Время будем получать из времени сообщения, или из времени обновления сообщения.
+
+#+begin_src go
+  package main
+
+  import (
+	  "errors"
+	  "log"
+	  "os"
+
+	  tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+  )
+
+  type Location struct {
+	  Latitude  float64
+	  Longitude float64
+	  Timestamp int
+  }
+
+  func main() {
+	  if len(os.Args) < 2 {
+		  log.Fatal("token not set")
+	  }
+	  token := os.Args[1]
+	  bot, err := tgbotapi.NewBotAPI(token)
+	  if err != nil {
+		  log.Panic(err)
+	  }
+	  log.Printf("Authorised on account %s", bot.Self.UserName)
+
+	  bot.Debug = true
+
+	  u := tgbotapi.NewUpdate(0)
+	  u.Timeout = 60
+
+	  updates := bot.GetUpdatesChan(u)
+
+	  for update := range updates {
+
+		  var msg *tgbotapi.Message
+		  switch {
+
+		  case update.Message != nil:
+			  msg = update.Message
+		  case update.EditedMessage != nil:
+			  msg = update.EditedMessage
+		  default:
+			  continue
+		  }
+
+		  loc, err := getLocationFromMessage(msg)
+		  if err != nil {
+			  log.Print(err)
+			  continue
+		  }
+		  log.Printf("%+v", loc)
+
+	  }
+  }
+
+  func getLocationFromMessage(msg *tgbotapi.Message) (Location, error) {
+
+	  if msg.Location == nil {
+		  return Location{}, errors.New("Msg has no location")
+	  }
+	  loc := Location{
+		  Latitude:  msg.Location.Latitude,
+		  Longitude: msg.Location.Longitude,
+		  Timestamp: msg.Date,
+	  }
+
+	  if msg.EditDate != 0 {
+		  loc.Timestamp = msg.EditDate
+	  }
+
+	  return loc, nil
+
+  }
+#+end_src
+
+Теперь, если запустить этого бота, затем открыть на телефоне чат с ним и отправить ему живую позицию
+в консоли будут последовательно выводиться текущие геокоординаты телефона.
+
+** Объект точки и идентификатор трека
+Нужно как-то разделять треки между собой, ведь точки полученные из разных чатов
+отсятся к разными трекам, да и точки полученные из разных сообщений это, по сути,
+разные треки. Поэтому я добавлю для каждой точки свойство "Track" и буду писать в него
+строку состоящую из идентификатора чата, из которого получено сообщение и идентификатора
+сообщения, под которым получено сообщение.
+
+1. Добавим в объект =Location= строковое свойство =Track=
+#+begin_src go
+  type Location struct {
+	  Track     string
+	  Latitude  float64
+	  Longitude float64
+	  Timestamp int
+  }
+#+end_src
+
+2. При определении точки новую функцию =getTrackFromMessage= для
+   вычисления идентификатора трека
+#+begin_src go
+  tid := getTrackFromMessage(msg)
+
+  loc := Location{
+	  Track:     tid,
+	  Latitude:  msg.Location.Latitude,
+	  Longitude: msg.Location.Longitude,
+	  Timestamp: msg.Date,
+  }
+#+end_src
+
+3. Создадим описание новой функции
+#+begin_src go
+  func getTrackFromMessage(msg *tgbotapi.Message) string {
+	  return fmt.Sprintf("%d_%d", msg.Chat.ID, msg.MessageID)
+  }
+#+end_src
+
+
+
+* База данных
+#+begin_quote
+Три вопроса меня волнуют:
+1. Зачем писать запросы если можно использовать ORM
+2. Зачем использовать ORM если можно писать запросы
+3. Зачем жрать капусту если есть картошка[fn:1]
+#+end_quote
+
+Поисковик рекомендует [[https://gorm.io/][GORM]] как ORM для Go, ну а кто я такой чтобы спорить с поисковиком?
+Давайте скорее посмотрим что с ним можно сделать!
+
+Базу данных я буду использовать sqlite3 потому что для наколеночного проекта такого уровня
+должно хватить.
+
+** Импортирование
+Добавляем импорты
+
+* Footnotes
+
+[fn:1] https://youtu.be/muEEtWI2CKc 
+
+
+
