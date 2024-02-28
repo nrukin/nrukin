@@ -1,0 +1,55 @@
+#+title: FizzBuzz на PlantUML
+#+date: <2024-02-27>
+#+keywords: draft plantUML
+
+Сегодня узнал что, оказывается, в моем любимом PlantUML встроен полноценный
+язык программирования: вместо того чтобы писать схему, можно написать программу,
+которая напишет за меня схему. Красота же, не?
+
+[[https://plantuml.com/ru/preprocessing][Документация по этой сверхполезной функции]]
+
+В качестве эксперимента написал простой скрипт в котором Алиса отправляет Бобу сообщения играя в
+классическую игру FizzBuzz. Я никогда раньше не решал эту программистскую головоломку,
+и это первая моя её реализация, и сразу на PlantUML.
+
+Напомню суть: выводим последовательность чисел, если число делится на три - вместо числа
+выводим *Fuzz*, если число делится на пять - выводим *Buzz*, делится одновременно
+и на три и на пять - *FuzzBuzz*.
+
+Получился такой код:\\
+#+begin_src plantuml
+@startuml
+
+title FizzBuzz
+
+participant Alice
+participant Bob
+
+!procedure $msg($a)
+  !$rs = ""
+  !if ($a-($a/3)*3==0)
+    !$rs="Fizz"
+  !endif
+  !if ($a-($a/5)*5==0)
+    !$rs=$rs+"Buzz"
+  !endif
+  !if ($rs=="")
+    !$rs=$a
+  !endif
+  $rs
+!endprocedure
+
+!$a=1
+!while $a<=30
+  Alice -> Bob : $msg($a)
+  !$a = $a + 1
+!endwhile
+
+@enduml
+#+end_src
+
+и такая диаграмма:\\
+#+begin_center
+[[file:../static/plantuml-fizzbuzz/fizzbuzz.png]]
+#+end_center
+
