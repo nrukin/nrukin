@@ -7,6 +7,9 @@
 (unless (package-installed-p 'htmlize)
   (package-install 'htmlize))
 
+(unless (package-installed-p 'plantuml-mode)
+  (package-install 'plantuml-mode))
+
 (require 'ox-publish)
 
 (setq org-html-metadata-timestamp-format "%d %B %Y")
