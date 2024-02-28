@@ -1,6 +1,6 @@
 #+title: FizzBuzz на PlantUML
-#+date: <2024-02-27>
-#+keywords: draft plantUML
+#+date: <2024-02-28>
+#+keywords: plantUML
 
 Сегодня узнал что, оказывается, в моем любимом PlantUML встроен полноценный
 язык программирования: вместо того чтобы писать схему, можно написать программу,
@@ -52,4 +52,5 @@ participant Bob
 #+begin_center
 [[file:../static/plantuml-fizzbuzz/fizzbuzz.png]]
 #+end_center
+
 
