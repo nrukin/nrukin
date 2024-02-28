@@ -53,4 +53,5 @@ participant Bob
 [[file:../static/plantuml-fizzbuzz/fizzbuzz.png]]
 #+end_center
 
-
+Пока не очень представляю где это может пригодиться на практике,
+но функция интересная.
