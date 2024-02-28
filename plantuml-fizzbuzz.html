@@ -5,8 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Содержание</title>
+<title>FizzBuzz на PlantUML</title>
 <meta name="generator" content="Org mode" />
+<meta name="keywords" content="plantUML" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -276,18 +277,82 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <div id="content">
-<h1 class="title">Содержание</h1>
-<ul class="org-ul">
-<li>2024-02-28 - <a href="plantuml-fizzbuzz.html">FizzBuzz на PlantUML</a></li>
-<li>2024-01-11 - <a href="use-package-emacs.html">(use-package emacs)</a></li>
-<li>2023-10-23 - <a href="lucky-tickets-2.html">Подсчет счастливых билетов на Python</a></li>
-<li>2023-09-25 - <a href="lucky-tickets.html">Задача счастливых билетиков и сравнение производительности языков</a></li>
-<li>2023-09-20 - <a href="emacs-radio.html">Радио не выходя из emacs</a></li>
-<li>2023-07-26 - <a href="go-mode.html">Настройка emacs для программирования на Go</a></li>
-<li>2023-07-25 - <a href="elfeed.html">Elfeed - Читалка RSS в Emacs</a></li>
-<li>2023-07-20 - <a href="emacs-tabs.html">Табы в emacs</a></li>
-<li>2023-07-19 - <a href="jira-prop-hotkey.html">Быстрое редактирование свойств в org-mode</a></li>
-</ul>
+<h1 class="title">FizzBuzz на PlantUML</h1>
+<p>
+Сегодня узнал что, оказывается, в моем любимом PlantUML встроен полноценный
+язык программирования: вместо того чтобы писать схему, можно написать программу,
+которая напишет за меня схему. Красота же, не?
+</p>
+
+<p>
+<a href="https://plantuml.com/ru/preprocessing">Документация по этой сверхполезной функции</a>
+</p>
+
+<p>
+В качестве эксперимента написал простой скрипт в котором Алиса отправляет Бобу сообщения играя в
+классическую игру FizzBuzz. Я никогда раньше не решал эту программистскую головоломку,
+и это первая моя её реализация, и сразу на PlantUML.
+</p>
+
+<p>
+Напомню суть: выводим последовательность чисел, если число делится на три - вместо числа
+выводим <b>Fuzz</b>, если число делится на пять - выводим <b>Buzz</b>, делится одновременно
+и на три и на пять - <b>FuzzBuzz</b>.
+</p>
+
+<p>
+Получился такой код:<br />
+</p>
+<div class="org-src-container">
+<pre class="src src-plantuml"><span style="font-weight: bold;">@startuml</span>
+
+<span style="font-weight: bold;">title</span> FizzBuzz
+
+<span style="font-weight: bold; text-decoration: underline;">participant</span> Alice
+<span style="font-weight: bold; text-decoration: underline;">participant</span> Bob
+
+<span style="font-weight: bold;">!procedure</span> $msg($a)
+  !$rs = <span style="font-style: italic;">""</span>
+<span style="font-weight: bold;">  !if</span> ($a-($a/3)*3==0)
+    !$rs=<span style="font-style: italic;">"Fizz"</span>
+<span style="font-weight: bold;">  !endif</span>
+<span style="font-weight: bold;">  !if</span> ($a-($a/5)*5==0)
+    !$rs=$rs+<span style="font-style: italic;">"Buzz"</span>
+<span style="font-weight: bold;">  !endif</span>
+<span style="font-weight: bold;">  !if</span> ($rs==<span style="font-style: italic;">""</span>)
+    !$rs=$a
+<span style="font-weight: bold;">  !endif</span>
+  $rs
+<span style="font-weight: bold;">!endprocedure</span>
+
+!$a=1
+!while $a&lt;=30
+  Alice <span style="font-weight: bold;">-&gt;</span> Bob : $msg($a)
+  !$a = $a + 1
+!endwhile
+
+<span style="font-weight: bold;">@enduml</span>
+</pre>
+</div>
+
+<p>
+и такая диаграмма:<br />
+</p>
+<div class="org-center">
+
+<div class="figure">
+<p><img src="../static/plantuml-fizzbuzz/fizzbuzz.png" alt="fizzbuzz.png" />
+</p>
+</div>
+</div>
+
+<p>
+Пока не очень представляю где это может пригодиться на практике,
+но функция интересная.
+</p>
+</div>
+<div id="postamble" class="status">
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 28 February 2024</p>
 </div>
 </body>
 </html>

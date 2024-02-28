@@ -282,16 +282,16 @@ for the JavaScript code in this tag.
 Короткая заметка о том как можно настроить emacs для написания (или чтения) кода на Go.
 </p>
 
-<div id="outline-container-org6f53a0a" class="outline-2">
-<h2 id="org6f53a0a">Установка go, gopls и goimport</h2>
-<div class="outline-text-2" id="text-org6f53a0a">
+<div id="outline-container-org974d63f" class="outline-2">
+<h2 id="org974d63f">Установка go, gopls и goimport</h2>
+<div class="outline-text-2" id="text-org974d63f">
 <p>
 Открываем консоль в emacs - <code>M-x shell</code>.
 </p>
 </div>
-<div id="outline-container-org555faef" class="outline-3">
-<h3 id="org555faef">go</h3>
-<div class="outline-text-3" id="text-org555faef">
+<div id="outline-container-org4fed4fd" class="outline-3">
+<h3 id="org4fed4fd">go</h3>
+<div class="outline-text-3" id="text-org4fed4fd">
 <p>
 В первую очередь нужно установить сам go. Если go установлен - шаг пропускаем.
 Если нет - устанавливаем по инструкции под свою платформу <a href="https://go.dev/doc/install">https://go.dev/doc/install</a>
@@ -313,9 +313,9 @@ C-x f /sudo::/etc/profile
 </div>
 </div>
 </div>
-<div id="outline-container-org31b71be" class="outline-3">
-<h3 id="org31b71be">gopls</h3>
-<div class="outline-text-3" id="text-org31b71be">
+<div id="outline-container-orgf5d5d8b" class="outline-3">
+<h3 id="orgf5d5d8b">gopls</h3>
+<div class="outline-text-3" id="text-orgf5d5d8b">
 <p>
 Во вторую очередь (но не менее важно) нам понадобится language-server для go - <a href="https://github.com/golang/tools/tree/master/gopls">gopls</a>.
 </p>
@@ -333,9 +333,9 @@ C-x f /sudo::/etc/profile
 </div>
 </div>
 </div>
-<div id="outline-container-org22d4ad6" class="outline-3">
-<h3 id="org22d4ad6">goimport</h3>
-<div class="outline-text-3" id="text-org22d4ad6">
+<div id="outline-container-org4a3acde" class="outline-3">
+<h3 id="org4a3acde">goimport</h3>
+<div class="outline-text-3" id="text-org4a3acde">
 <p>
 И в третью очередь нам понадобится <a href="https://pkg.go.dev/golang.org/x/tools/cmd/goimports">goimports</a>.
 Пишем в консоли
@@ -350,9 +350,9 @@ C-x f /sudo::/etc/profile
 </div>
 </div>
 </div>
-<div id="outline-container-orgfac5766" class="outline-2">
-<h2 id="orgfac5766">go-mode и eglot</h2>
-<div class="outline-text-2" id="text-orgfac5766">
+<div id="outline-container-org41c43b3" class="outline-2">
+<h2 id="org41c43b3">go-mode и eglot</h2>
+<div class="outline-text-2" id="text-org41c43b3">
 <p>
 Устанавливаем пакеты:
 </p>
@@ -416,9 +416,9 @@ C-x f /sudo::/etc/profile
 </div>
 </div>
 
-<div id="outline-container-org71657d8" class="outline-2">
-<h2 id="org71657d8">Разное удобство</h2>
-<div class="outline-text-2" id="text-org71657d8">
+<div id="outline-container-org99597f3" class="outline-2">
+<h2 id="org99597f3">Разное удобство</h2>
+<div class="outline-text-2" id="text-org99597f3">
 <p>
 Перечисленные ниже пакеты и настройки не относятся напрямую к go,
 но всячески упрощают написание кода.
@@ -459,9 +459,9 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </div>
 </div>
 
-<div id="outline-container-orgf068bb1" class="outline-2">
-<h2 id="orgf068bb1">go-playground</h2>
-<div class="outline-text-2" id="text-orgf068bb1">
+<div id="outline-container-org6358f0f" class="outline-2">
+<h2 id="org6358f0f">go-playground</h2>
+<div class="outline-text-2" id="text-org6358f0f">
 <p>
 <a href="https://github.com/grafov/go-playground">https://github.com/grafov/go-playground</a>
 Просто пакет позволяющий выполнять маленькие куски кода,
@@ -480,9 +480,9 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </p>
 </div>
 </div>
-<div id="outline-container-org2c41c07" class="outline-2">
-<h2 id="org2c41c07">Тестирование</h2>
-<div class="outline-text-2" id="text-org2c41c07">
+<div id="outline-container-org7ca630f" class="outline-2">
+<h2 id="org7ca630f">Тестирование</h2>
+<div class="outline-text-2" id="text-org7ca630f">
 <p>
 Для тестирования установим пакет <a href="https://github.com/nlamirault/gotest.el">gotest</a>
 </p>
@@ -492,9 +492,9 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </div>
 </div>
 </div>
-<div id="outline-container-org4813f0f" class="outline-2">
-<h2 id="org4813f0f">Hydra</h2>
-<div class="outline-text-2" id="text-org4813f0f">
+<div id="outline-container-orgc4374d3" class="outline-2">
+<h2 id="orgc4374d3">Hydra</h2>
+<div class="outline-text-2" id="text-orgc4374d3">
 <p>
 <a href="https://github.com/abo-abo/hydra">Hydra</a> - пакет emacs, позволяющий настраивать собственные комбинации
 сочетаний клавиш. Добавим такой сниппет:
@@ -582,17 +582,17 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </div>
 </div>
 
-<div id="outline-container-org2e7b22b" class="outline-2">
-<h2 id="org2e7b22b">Отладка</h2>
-<div class="outline-text-2" id="text-org2e7b22b">
+<div id="outline-container-org1e4e477" class="outline-2">
+<h2 id="org1e4e477">Отладка</h2>
+<div class="outline-text-2" id="text-org1e4e477">
 <p>
 Я особо не пользовался отладкой под Go, но на будущее
 набросал небольшой конфиг. Может быть уточню его позже когда-нибудь.
 </p>
 </div>
-<div id="outline-container-org4a21873" class="outline-3">
-<h3 id="org4a21873">Отладчик devle</h3>
-<div class="outline-text-3" id="text-org4a21873">
+<div id="outline-container-org16d784b" class="outline-3">
+<h3 id="org16d784b">Отладчик devle</h3>
+<div class="outline-text-3" id="text-org16d784b">
 <p>
 Устанавливаем отладчик <a href="https://github.com/go-delve/delve">delve</a>
 </p>
@@ -602,9 +602,9 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </div>
 </div>
 </div>
-<div id="outline-container-org837f5eb" class="outline-3">
-<h3 id="org837f5eb">go-dlv</h3>
-<div class="outline-text-3" id="text-org837f5eb">
+<div id="outline-container-orgbcdf4d7" class="outline-3">
+<h3 id="orgbcdf4d7">go-dlv</h3>
+<div class="outline-text-3" id="text-orgbcdf4d7">
 <p>
 Добавляем пакет <a href="https://github.com/benma/go-dlv.el">go-dlv</a>
 </p>
@@ -617,9 +617,9 @@ elisp-кода, но и для go пригодится, а почему бы и 
 </p>
 </div>
 </div>
-<div id="outline-container-orgc2e4995" class="outline-3">
-<h3 id="orgc2e4995">Использование отладки</h3>
-<div class="outline-text-3" id="text-orgc2e4995">
+<div id="outline-container-orgb9e8517" class="outline-3">
+<h3 id="orgb9e8517">Использование отладки</h3>
+<div class="outline-text-3" id="text-orgb9e8517">
 <p>
 Запускаем отладчик командой <code>M-x dlv</code>, соглашаемся с предложенной в минибуфере командой.
 </p>
