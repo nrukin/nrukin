@@ -1,0 +1,185 @@
+#+title: Служба Windows на FastAPI
+#+date: <2024-05-06>
+#+keywords: FastAPI
+
+Понадобилось мне написать небольшое Win-приложение под FastAPI, которое должно:
++ Работать под Windows в режиме службы
++ /Компилироваться/ в exe
+
+В качестве примера напишу небольшой сервис, который будет генерировать UUID по
+входящему запросу. И правда ведь, в жизни нередко возникают ситуации когда внезапно
+появляется потребность получить несколько новыx UUID - как раз для этой цели мы и
+напишем свой сервис.
+
+Весь код проекта доступен в [[https://github.com/nrukin/python-fastapi-win-service-example][на GitHub]].
+
+* Подготовка
+Создаем папку проекта, виртуальное окружение, устанавливаем зависимости.
+#+begin_src shell
+  mkdir uuid-generator
+  cd uuid-generator
+  mkdir venv
+  python venv -m venv
+  venv\Scripts\activate.bat
+
+  pip install pyinstaller fastapi pywin32 "uvicorn[standard]"
+#+end_src
+
+* Простой app
+Пишем сервис. Код примитивный: слушаем адрес =generate_uuid=,
+при входящем запросе генерируем uuid - столько сколько запросили.
+
+Файл =main.py=
+#+begin_src python
+  from fastapi import FastAPI
+  from uuid import uuid4
+
+  app = FastAPI()
+
+
+  @app.get("/generate_uuid")
+  def generate_uid(count: int = 1) -> list[str]:
+      return [str(uuid4()) for i in range(count)]
+#+end_src
+
+Запускаем через uvicorn
+#+begin_src shell
+  uvicorn app:main
+#+end_src
+
+Переходим на http://127.0.0.1:8000/generate_uuid?count=20 смотрим на
+результаты генерации, умиляемся.
+
+* Усложняем
+** Файл main.py
+Слегка усложним наш app, заодно победим пару проблем:
+1. Импортируем uvicorn и вызовем его явно - таким образом запускать приложение
+   можно будет простым запуском файла =main.py=
+2. Для управления приложением используем объект =Server= где явно настраивается
+   и запускается приложение
+3. В строке =self._srv.install_signal_handlers = lambda: None=  отключаем обработку сигналов - они корректно не
+   обрабатываются, см:
+   + https://stackoverflow.com/4/running-uvicorn-as-windowsservice-signal-only-works-in-main-thread
+   + https://github.com/encode/uvicorn/issues/526
+
+   Это не критично для сервиса, просто явно завершаем приложение взведением флага =should_exit=
+   
+#+begin_src python
+  from fastapi import FastAPI
+  from uuid import uuid4
+  import uvicorn
+
+  app = FastAPI()
+
+
+  @app.get("/generate_uuid")
+  def generate_uid(count: int = 1) -> list[str]:
+      return [str(uuid4()) for i in range(count)]
+
+
+  class Server():
+      def __init__(self, as_service=False):
+	  self._srv = None
+	  self.as_service = as_service
+
+      def start(self):
+	  config = uvicorn.Config(app)
+	  self._srv = uvicorn.Server(config=config)
+
+	  if self.as_service:
+	      self._srv.install_signal_handlers = lambda: None
+
+	  self._srv.run()
+
+      def stop(self):
+	  if self._srv is not None:
+	      self._srv.should_exit = True
+
+
+  def run():
+      srv = Server()
+      srv.start()
+
+
+  if __name__ == "__main__":
+      run()
+  
+#+end_src
+
+** Файл service.py
+В файле service.py мы:
++ Импортируем и запускаем наш сервер, описанный в main.py; в когда надо остановить - останавливаем без сожалений
++ =asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())= - эта строка
+  нужна для корректного запуска FastAPI, иначе сбоит
+  
+#+begin_src python
+  import win32serviceutil
+  import win32service
+  import win32event
+  import servicemanager
+  import socket
+  from main import Server
+  import asyncio
+  import sys
+
+
+  class AppServerSvc (win32serviceutil.ServiceFramework):
+      _svc_name_ = "uuidGenerator"
+      _svc_display_name_ = "UUID generator"
+
+      def __init__(self, args):
+	  win32serviceutil.ServiceFramework.__init__(self, args)
+	  self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+	  socket.setdefaulttimeout(60)
+	  self.svc = None
+
+      def SvcStop(self):
+	  self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+	  if self.svc is not None:
+	      self.svc.stop()
+	  win32event.SetEvent(self.hWaitStop)
+
+      def SvcDoRun(self):
+	  asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+	  servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+				servicemanager.PYS_SERVICE_STARTED,
+				(self._svc_name_, ''))
+	  self.svc = Server(True)
+	  self.svc.start()
+
+
+  def init():
+      if len(sys.argv) == 1:
+	  servicemanager.Initialize()
+	  servicemanager.PrepareToHostSingle(AppServerSvc)
+	  servicemanager.StartServiceCtrlDispatcher()
+      else:
+	  win32serviceutil.HandleCommandLine(AppServerSvc)
+
+
+  if __name__ == '__main__':
+      init()
+#+end_src
+
+* Сборка exe
+Для сборки в exe вызовем установленный pyinstaller:
+#+begin_src shell
+  venv\Scripts\pyinstaller --onefile --hidden-import=uvicorn --hidden-import=win32timezone --name=uuid-gen-svc service.py
+#+end_src
+
+Файл =uuid-gen-svc= будет лежать в папке =dist= проекта
+
+* Установка сервиса
+Устанавливаем сервис
+#+begin_src shell
+  cd dist
+  uuid-gen-svc install
+#+end_src
+
+Воспользуемся утилитой =sc= для того чтобы запустить службу и настроить её автозапуск
+#+begin_src shell
+  sc start uuidGenerator
+  sc config uuidGenerator start=auto
+#+end_src
+
+Снова переходим на http://127.0.0.1:8000/generate_uuid?count=50 и умиляемся какой замечательный сервис у нас получился.
