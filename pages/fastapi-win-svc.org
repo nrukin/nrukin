@@ -24,7 +24,6 @@
 
   pip install pyinstaller fastapi pywin32 "uvicorn[standard]"
 #+end_src
-
 * Простой app
 Пишем сервис. Код примитивный: слушаем адрес =generate_uuid=,
 при входящем запросе генерируем uuid - столько сколько запросили.
@@ -52,7 +51,7 @@
 
 * Усложняем
 ** Файл main.py
-Слегка усложним наш app, заодно победим пару проблем:
+Слегка усложним код, заодно победим пару проблем:
 1. Импортируем uvicorn и вызовем его явно - таким образом запускать приложение
    можно будет простым запуском файла =main.py=
 2. Для управления приложением используем объект =Server= где явно настраивается
@@ -106,9 +105,17 @@
   
 #+end_src
 
+Теперь запускать можно простым
+#+begin_src shell
+  venv\Scripts\python.exe main.py
+#+end_src
+
 ** Файл service.py
-В файле service.py мы:
-+ Импортируем и запускаем наш сервер, описанный в main.py; в когда надо остановить - останавливаем без сожалений
+
+Этот файл нужен нам для того чтобы наш app работал в режиме Windows-службы, здесь мы:
+
++ Описываем службу и её поведение
++ Импортируем и запускаем сервер, описанный в main.py
 + =asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())= - эта строка
   нужна для корректного запуска FastAPI, иначе сбоит
   
@@ -123,7 +130,7 @@
   import sys
 
 
-  class AppServerSvc (win32serviceutil.ServiceFramework):
+  class AppServerSvc(win32serviceutil.ServiceFramework):
       _svc_name_ = "uuidGenerator"
       _svc_display_name_ = "UUID generator"
 
@@ -167,10 +174,10 @@
   venv\Scripts\pyinstaller --onefile --hidden-import=uvicorn --hidden-import=win32timezone --name=uuid-gen-svc service.py
 #+end_src
 
-Файл =uuid-gen-svc= будет лежать в папке =dist= проекта
+Файл =uuid-gen-svc.exe= будет лежать в папке =dist= проекта
 
 * Установка сервиса
-Устанавливаем сервис
+Устанавливаем службу
 #+begin_src shell
   cd dist
   uuid-gen-svc install
