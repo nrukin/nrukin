@@ -171,7 +171,11 @@
 * Сборка exe
 Для сборки в exe вызовем установленный pyinstaller:
 #+begin_src shell
-  venv\Scripts\pyinstaller --onefile --hidden-import=uvicorn --hidden-import=win32timezone --name=uuid-gen-svc service.py
+  venv\Scripts\pyinstaller ^
+	      --onefile ^
+	      --hidden-import=uvicorn ^
+	      --hidden-import=win32timezone ^
+	      --name=uuid-gen-svc service.py
 #+end_src
 
 Файл =uuid-gen-svc.exe= будет лежать в папке =dist= проекта
