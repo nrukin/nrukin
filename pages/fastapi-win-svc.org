@@ -2,7 +2,7 @@
 #+date: <2024-05-06>
 #+keywords: FastAPI
 
-Понадобилось мне написать небольшое Win-приложение под FastAPI, которое должно:
+Опишу процесс создания Windows-приложения на основании FastAPI, которое будет:
 + Работать под Windows в режиме службы
 + /Компилироваться/ в exe
 
@@ -58,7 +58,7 @@
    и запускается приложение
 3. В строке =self._srv.install_signal_handlers = lambda: None=  отключаем обработку сигналов - они корректно не
    обрабатываются, см:
-   + https://stackoverflow.com/4/running-uvicorn-as-windowsservice-signal-only-works-in-main-thread
+   + https://stackoverflow.com/questions/56825574/running-uvicorn-as-windowsservice-signal-only-works-in-main-thread
    + https://github.com/encode/uvicorn/issues/526
 
    Это не критично для сервиса, просто явно завершаем приложение взведением флага =should_exit=
