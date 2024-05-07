@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Служба Windows на FastAPI</title>
+<meta name="generator" content="Org mode" />
+<meta name="keywords" content="FastAPI" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+   m[i].l=1*new Date();
+   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+   ym(94443125, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true
+   });
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/94443125" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+<link rel='stylesheet' type='text/css' href='css/site.css' />
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="preamble" class="status">
+<!-- <div class='intro'>
+  <h1>
+    <span class='gray'>John</span>
+    <span class='black'>Doe</span>
+  </h1>
+  <p>Emacser</p>
+</div> -->
+
+<div class='nav'>
+  <ul>
+    <li><a href='index.html'>В начало</a>.</li>
+    <!-- <li><a href='https://github.com/nrukin/'>GitHub</a>.</li> -->
+    <!-- <li><a href='/index.xml'>RSS</a>.</li> -->
+    <li><a href='about.html'>About</a>.</li>
+  </ul>
+</div>
+</div>
+<div id="content">
+<h1 class="title">Служба Windows на FastAPI</h1>
+<p>
+Опишу процесс создания Windows-приложения на основании FastAPI, которое будет:
+</p>
+<ul class="org-ul">
+<li>Работать под Windows в режиме службы</li>
+<li><i>Компилироваться</i> в exe</li>
+</ul>
+
+<p>
+В качестве примера создам небольшой сервис, который будет генерировать UUID по
+входящему запросу. И правда ведь, в жизни нередко возникают ситуации когда внезапно
+появляется потребность получить несколько новыx UUID - как раз для этой цели мы и
+напишем свой сервис.
+</p>
+
+<p>
+Весь код проекта доступен в <a href="https://github.com/nrukin/fastapi-win-service-example">на GitHub</a>.
+</p>
+
+<div id="outline-container-org93f3c7f" class="outline-2">
+<h2 id="org93f3c7f">Подготовка</h2>
+<div class="outline-text-2" id="text-org93f3c7f">
+<p>
+Создаем папку проекта, виртуальное окружение, устанавливаем зависимости.
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">mkdir uuid-generator
+<span style="font-weight: bold;">cd</span> uuid-generator
+mkdir venv
+python venv -m venv
+venv\Scripts\activate.bat
+
+pip install pyinstaller fastapi pywin32 <span style="font-style: italic;">"uvicorn[standard]"</span>
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-org03202f8" class="outline-2">
+<h2 id="org03202f8">Простой app</h2>
+<div class="outline-text-2" id="text-org03202f8">
+<p>
+Пишем сервис. Код примитивный: слушаем адрес <code>generate_uuid</code>,
+при входящем запросе генерируем uuid - столько сколько запросили.
+</p>
+
+<p>
+Файл <code>main.py</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">from</span> fastapi <span style="font-weight: bold;">import</span> FastAPI
+<span style="font-weight: bold;">from</span> uuid <span style="font-weight: bold;">import</span> uuid4
+
+<span style="font-weight: bold; font-style: italic;">app</span> = FastAPI()
+
+
+<span style="font-weight: bold; text-decoration: underline;">@app.get</span>(<span style="font-style: italic;">"/generate_uuid"</span>)
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">generate_uid</span>(count: <span style="font-weight: bold;">int</span> = 1) -&gt; <span style="font-weight: bold;">list</span>[<span style="font-weight: bold;">str</span>]:
+    <span style="font-weight: bold;">return</span> [<span style="font-weight: bold;">str</span>(uuid4()) <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(count)]
+</pre>
+</div>
+
+<p>
+Запускаем через uvicorn
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">uvicorn app:main
+</pre>
+</div>
+
+<p>
+Переходим на <a href="http://127.0.0.1:8000/generate_uuid?count=20">http://127.0.0.1:8000/generate_uuid?count=20</a> смотрим на
+результаты генерации, умиляемся.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd12c366" class="outline-2">
+<h2 id="orgd12c366">Усложняем</h2>
+<div class="outline-text-2" id="text-orgd12c366">
+</div>
+<div id="outline-container-org08f84d6" class="outline-3">
+<h3 id="org08f84d6">Файл main.py</h3>
+<div class="outline-text-3" id="text-org08f84d6">
+<p>
+Слегка усложним код, заодно победим пару проблем:
+</p>
+<ol class="org-ol">
+<li>Импортируем uvicorn и вызовем его явно - таким образом запускать приложение
+можно будет простым запуском файла <code>main.py</code></li>
+<li>Для управления приложением используем объект <code>Server</code> где явно настраивается
+и запускается приложение</li>
+<li><p>
+В строке <code>self._srv.install_signal_handlers = lambda: None</code>  отключаем обработку сигналов - они корректно не
+обрабатываются, см:
+</p>
+<ul class="org-ul">
+<li><a href="https://stackoverflow.com/questions/56825574/running-uvicorn-as-windowsservice-signal-only-works-in-main-thread">https://stackoverflow.com/questions/56825574/running-uvicorn-as-windowsservice-signal-only-works-in-main-thread</a></li>
+<li><a href="https://github.com/encode/uvicorn/issues/526">https://github.com/encode/uvicorn/issues/526</a></li>
+</ul>
+
+<p>
+Это не критично для сервиса, просто явно завершаем приложение взведением флага <code>should_exit</code>
+</p></li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">from</span> fastapi <span style="font-weight: bold;">import</span> FastAPI
+<span style="font-weight: bold;">from</span> uuid <span style="font-weight: bold;">import</span> uuid4
+<span style="font-weight: bold;">import</span> uvicorn
+
+<span style="font-weight: bold; font-style: italic;">app</span> = FastAPI()
+
+
+<span style="font-weight: bold; text-decoration: underline;">@app.get</span>(<span style="font-style: italic;">"/generate_uuid"</span>)
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">generate_uid</span>(count: <span style="font-weight: bold;">int</span> = 1) -&gt; <span style="font-weight: bold;">list</span>[<span style="font-weight: bold;">str</span>]:
+    <span style="font-weight: bold;">return</span> [<span style="font-weight: bold;">str</span>(uuid4()) <span style="font-weight: bold;">for</span> i <span style="font-weight: bold;">in</span> <span style="font-weight: bold;">range</span>(count)]
+
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">Server</span>():
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">__init__</span>(<span style="font-weight: bold;">self</span>, as_service=<span style="font-weight: bold; text-decoration: underline;">False</span>):
+        <span style="font-weight: bold;">self</span>._srv = <span style="font-weight: bold; text-decoration: underline;">None</span>
+        <span style="font-weight: bold;">self</span>.as_service = as_service
+
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">start</span>(<span style="font-weight: bold;">self</span>):
+        <span style="font-weight: bold; font-style: italic;">config</span> = uvicorn.Config(app)
+        <span style="font-weight: bold;">self</span>._srv = uvicorn.Server(config=config)
+
+        <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">self</span>.as_service:
+            <span style="font-weight: bold;">self</span>._srv.install_signal_handlers = <span style="font-weight: bold;">lambda</span>: <span style="font-weight: bold; text-decoration: underline;">None</span>
+
+        <span style="font-weight: bold;">self</span>._srv.run()
+
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">stop</span>(<span style="font-weight: bold;">self</span>):
+        <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">self</span>._srv <span style="font-weight: bold;">is</span> <span style="font-weight: bold;">not</span> <span style="font-weight: bold; text-decoration: underline;">None</span>:
+            <span style="font-weight: bold;">self</span>._srv.should_exit = <span style="font-weight: bold; text-decoration: underline;">True</span>
+
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">run</span>():
+    <span style="font-weight: bold; font-style: italic;">srv</span> = Server()
+    srv.start()
+
+
+<span style="font-weight: bold;">if</span> <span style="font-weight: bold;">__name__</span> == <span style="font-style: italic;">"__main__"</span>:
+    run()
+
+</pre>
+</div>
+
+<p>
+Теперь запускать можно простым
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">venv\Scripts\python.exe main.py
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org293d915" class="outline-3">
+<h3 id="org293d915">Файл service.py</h3>
+<div class="outline-text-3" id="text-org293d915">
+<p>
+Этот файл нужен нам для того чтобы наш app работал в режиме Windows-службы, здесь мы:
+</p>
+
+<ul class="org-ul">
+<li>Описываем службу и её поведение</li>
+<li>Импортируем и запускаем сервер, описанный в main.py</li>
+<li><code>asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())</code> - эта строка
+нужна для корректного запуска FastAPI, иначе сбоит</li>
+</ul>
+
+<div class="org-src-container">
+<pre class="src src-python"><span style="font-weight: bold;">import</span> win32serviceutil
+<span style="font-weight: bold;">import</span> win32service
+<span style="font-weight: bold;">import</span> win32event
+<span style="font-weight: bold;">import</span> servicemanager
+<span style="font-weight: bold;">import</span> socket
+<span style="font-weight: bold;">from</span> main <span style="font-weight: bold;">import</span> Server
+<span style="font-weight: bold;">import</span> asyncio
+<span style="font-weight: bold;">import</span> sys
+
+
+<span style="font-weight: bold;">class</span> <span style="font-weight: bold; text-decoration: underline;">AppServerSvc</span>(win32serviceutil.ServiceFramework):
+    <span style="font-weight: bold; font-style: italic;">_svc_name_</span> = <span style="font-style: italic;">"uuidGenerator"</span>
+    <span style="font-weight: bold; font-style: italic;">_svc_display_name_</span> = <span style="font-style: italic;">"UUID generator"</span>
+
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">__init__</span>(<span style="font-weight: bold;">self</span>, args):
+        win32serviceutil.ServiceFramework.__init__(<span style="font-weight: bold;">self</span>, args)
+        <span style="font-weight: bold;">self</span>.hWaitStop = win32event.CreateEvent(<span style="font-weight: bold; text-decoration: underline;">None</span>, 0, 0, <span style="font-weight: bold; text-decoration: underline;">None</span>)
+        socket.setdefaulttimeout(60)
+        <span style="font-weight: bold;">self</span>.svc = <span style="font-weight: bold; text-decoration: underline;">None</span>
+
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">SvcStop</span>(<span style="font-weight: bold;">self</span>):
+        <span style="font-weight: bold;">self</span>.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+        <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">self</span>.svc <span style="font-weight: bold;">is</span> <span style="font-weight: bold;">not</span> <span style="font-weight: bold; text-decoration: underline;">None</span>:
+            <span style="font-weight: bold;">self</span>.svc.stop()
+        win32event.SetEvent(<span style="font-weight: bold;">self</span>.hWaitStop)
+
+    <span style="font-weight: bold;">def</span> <span style="font-weight: bold;">SvcDoRun</span>(<span style="font-weight: bold;">self</span>):
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
+                              servicemanager.PYS_SERVICE_STARTED,
+                              (<span style="font-weight: bold;">self</span>._svc_name_, <span style="font-style: italic;">''</span>))
+        <span style="font-weight: bold;">self</span>.svc = Server(<span style="font-weight: bold; text-decoration: underline;">True</span>)
+        <span style="font-weight: bold;">self</span>.svc.start()
+
+
+<span style="font-weight: bold;">def</span> <span style="font-weight: bold;">init</span>():
+    <span style="font-weight: bold;">if</span> <span style="font-weight: bold;">len</span>(sys.argv) == 1:
+        servicemanager.Initialize()
+        servicemanager.PrepareToHostSingle(AppServerSvc)
+        servicemanager.StartServiceCtrlDispatcher()
+    <span style="font-weight: bold;">else</span>:
+        win32serviceutil.HandleCommandLine(AppServerSvc)
+
+
+<span style="font-weight: bold;">if</span> <span style="font-weight: bold;">__name__</span> == <span style="font-style: italic;">'__main__'</span>:
+    init()
+</pre>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge932551" class="outline-2">
+<h2 id="orge932551">Сборка exe</h2>
+<div class="outline-text-2" id="text-orge932551">
+<p>
+Для сборки в exe вызовем установленный pyinstaller:
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">venv\Scripts\pyinstaller --onefile --hidden-import=uvicorn --hidden-import=win32timezone --name=uuid-gen-svc service.py
+</pre>
+</div>
+
+<p>
+Файл <code>uuid-gen-svc.exe</code> будет лежать в папке <code>dist</code> проекта
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgf43c8b0" class="outline-2">
+<h2 id="orgf43c8b0">Установка сервиса</h2>
+<div class="outline-text-2" id="text-orgf43c8b0">
+<p>
+Устанавливаем службу
+</p>
+<div class="org-src-container">
+<pre class="src src-shell"><span style="font-weight: bold;">cd</span> dist
+uuid-gen-svc install
+</pre>
+</div>
+
+<p>
+Воспользуемся утилитой <code>sc</code> запуска службы и настройки её автозапуска:
+</p>
+<div class="org-src-container">
+<pre class="src src-shell">sc start uuidGenerator
+sc config uuidGenerator <span style="font-weight: bold; font-style: italic;">start</span>=auto
+</pre>
+</div>
+
+<p>
+Снова переходим на <a href="http://127.0.0.1:8000/generate_uuid?count=50">http://127.0.0.1:8000/generate_uuid?count=50</a> и умиляемся какой замечательный сервис у нас получился.
+</p>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 06 May 2024</p>
+</div>
+</body>
+</html>
