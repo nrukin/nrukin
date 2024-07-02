@@ -1,5 +1,4 @@
 * About
-#+begin_example
-¯\_(ツ)_/¯
-#+end_example
+
+Привет, меня зовут Никита, это мой блог. Для обратной связи - почта [[mailto:2873029+blog@gmail.com][2873029+blog@gmail.com]]
 
