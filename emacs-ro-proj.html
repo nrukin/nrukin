@@ -5,8 +5,9 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>About</title>
+<title>Emacs. Только чтение для проекта без программирования</title>
 <meta name="generator" content="Org mode" />
+<meta name="keywords" content="emacs" />
 <style type="text/css">
  <!--/*--><![CDATA[/*><!--*/
   .title  { text-align: center;
@@ -276,16 +277,27 @@ for the JavaScript code in this tag.
 </div>
 </div>
 <div id="content">
-<h1 class="title">About</h1>
-
-<div id="outline-container-org1d40a83" class="outline-2">
-<h2 id="org1d40a83">About</h2>
-<div class="outline-text-2" id="text-org1d40a83">
+<h1 class="title">Emacs. Только чтение для проекта без программирования</h1>
 <p>
-Привет, меня зовут Никита, это мой блог. Для обратной связи - почта <a href="mailto:2873029+blog@gmail.com">2873029+blog@gmail.com</a>
+Понадобилось мне один проект сделать нередактируемым: чтобы файлы можно было открыть, но нельзя править.
+Поначалу при открытии файла нажимал <code>C-x C-q</code> но быстро надоело.
+</p>
+
+<p>
+Чтобы запретить редактирование проекта достаточно установить
+для всех буферов проекта значение локальной переменной <code>buffer-read-only</code> в <code>t</code>,
+а значит нужно всего лишь взять <code>.dir-locals.el</code>, написать в нем
+</p>
+<div class="org-src-container">
+<pre class="src src-emacs-lisp">((nil . ((buffer-read-only . t))))
+</pre>
+</div>
+<p>
+и сохранить в корне.
 </p>
 </div>
-</div>
+<div id="postamble" class="status">
+<p class="date">&#1044;&#1072;&#1090;&#1072;: 03 October 2024</p>
 </div>
 </body>
 </html>
